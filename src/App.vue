@@ -1,6 +1,5 @@
 <template lang='pug'>
   #app
-    h1 Hello World
     main-header
     navigation
     router-view

@@ -1,11 +1,13 @@
 /* import other CSS files as such: */
-/* @import '../../../node_modules/semantic-ui/dist/semantic.min.css'; */
+@import '../../../node_modules/flexboxgrid/dist/flexboxgrid.min.css';
+
+body{
+  background-color: #2c3e50;
+}
 
 #app{
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
+

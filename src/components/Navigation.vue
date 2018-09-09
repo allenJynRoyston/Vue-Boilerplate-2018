@@ -1,11 +1,11 @@
 <template lang="pug">
   div
-    br
-    a
-      router-link(to="/") Home
-    a
-      router-link(to="/about") About
-    br
+    //- br
+    //- a
+    //-   router-link(to="/") Home
+    //- a
+    //-   router-link(to="/about") About
+    //- br
 </template>
 
 <script>
