@@ -13,10 +13,10 @@ export class VJSlider {
         }
 
         this.images = [
-            {src: 'https://picsum.photos/800/600?image=1', index: 0},
-            {src: 'https://picsum.photos/200/300?image=2', index: 1},
-            {src: 'https://picsum.photos/200/300?image=33', index: 2},            
-            {src: 'https://picsum.photos/1200/300?image=551', index: 3},
+            {src: 'https://picsum.photos/800/600?image=111', index: 0},
+            {src: 'https://picsum.photos/800/600?image=222', index: 1},
+            {src: 'https://picsum.photos/800/600?image=178', index: 2},            
+            {src: 'https://picsum.photos/1200/600?image=444', index: 3},
         ]
         this.cards = {
             ele: null,
@@ -332,7 +332,7 @@ export class VJSlider {
             }, 125)               
         }
 
-
+        // horizontal/overlay sliders
         if(this.determineType() === 'h'){
 
             switch(options.type){
@@ -397,6 +397,7 @@ export class VJSlider {
             }
         }
 
+        // vertical sliders
         if(this.determineType() === 'v'){
 
             switch(options.type){
