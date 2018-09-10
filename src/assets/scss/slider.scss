@@ -1,35 +1,92 @@
   .vj-slider{
-    background-color: black;
+
+    &--small{
+      height: 200px
+    }
+
+    &--default{
+      height: 400px
+    }
+
+    &--large{
+      height: 600px
+    }    
     
+    &--container{
+      background-color: rgba(0, 0, 0, .2);
+      
+
+      button{
+        border:none;
+        background-color: transparent;    
+        padding: 0; margin: 0;
+      }      
+    }
+    
+    &--text{
+      &-header-banner{
+        padding: 5px 15px;
+        width: 100%;
+        height: auto;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        background-color: rgba(0, 0, 0, .5)
+      }  
+      
+      &-footer-banner{
+        padding: 5px 15px;
+        width: 100%;
+        height: auto;
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        background-color: rgba(0, 0, 0, .5);
+        text-align: right
+      }        
+
+      &-header{
+        padding: 0; margin: 0;
+        position: relative;
+        color: white; 
+      }
+      
+      &-footer{
+        padding: 0; margin: 0;
+        position: relative;
+        color: white;
+      }      
+    }
+
     &--dots{
       &-container{
-        position: absolute; 
+        position: relative; 
         bottom: 0;
         left: 0;
-        padding: 0px; 
-        margin: 0px;           
+        padding: 0; 
+        margin: 0;           
         width: 100%; 
         height: auto; 
         display: flex; 
         align-items: center; 
         justify-content: center;
+        transform: translateY(0px);
+        padding: 10px 0;
       }
       &-item{
         font-size: 30px; 
         color: white;
-        line-height: 1; 
-        padding: 5px; 
+        line-height: 1;         
         cursor: pointer; 
-        margin: 0px 5px;     
+        margin: 0 10px!important;   
+        padding: 0!important;
         
         &--active{
-          color: red;
-          font-size: 50px; 
+          color: red; 
         }         
         
         &--inactive{
-          color: white;
-          font-size: 50px; 
+          color: white; 
         }           
       }   
       
@@ -50,15 +107,18 @@
         justify-content: center;
 
         .icon{
-         width: 50px;
-         height: 50px;
+         padding: 10px;
          cursor: pointer;
-         background-color: white;
+         color: white;
+         background-color: none;
          display: flex;
          align-items: center;
          justify-content: center;
          font-size: 40px
         }
+        .icon:hover{
+          color: red
+        }        
       }
 
       &-right{
@@ -72,14 +132,18 @@
         justify-content: center;
 
         .icon{
-         width: 50px;
-         height: 50px;
+         padding: 10px;
          cursor: pointer;
-         background-color: white;
+         color: white;
+         background-color: none;
          display: flex;
          align-items: center;
          justify-content: center;
          font-size: 40px
+        }
+
+        .icon:hover{
+          color: red
         }
       }      
     }
