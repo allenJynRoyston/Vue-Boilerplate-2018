@@ -6,7 +6,8 @@ import Router from 'vue-router'
 import MainHeader from '../components/MainHeader.vue'
 import Navigation from '../components/Navigation.vue'
 import Home from '../components/Home.vue'
-import About from '../components/About.vue'
+import Examples from '../components/Examples.vue'
+import Install from '../components/Install.vue'
 import MainFooter from '../components/MainFooter.vue'
 import Card from '../components/Card.vue'
 
@@ -28,9 +29,14 @@ export default new Router({
       component: Home
     },
     {
-      path: '/about',
-      name: 'About',
-      component: About
-    }
+      path: '/examples',
+      name: 'Examples',
+      component: Examples
+    },
+    {
+      path: '/install',
+      name: 'Install',
+      component: Install
+    }    
   ]
 })

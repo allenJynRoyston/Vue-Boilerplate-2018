@@ -350,29 +350,33 @@ export class VJSlider {
         let {randomId, options} = this
         let ele = document.querySelector(`#${randomId} .__underlay`);  
 
-        // renders container (timer is to hide until ready)
-        let _style = `position: absolute; top: 0; left: 0; width: 100%; height: 100%;`
-        ele.setAttribute('style', `${_style}; opacity: 0`);
-        setTimeout(() => {
-            ele.setAttribute('style', `${_style}; opacity: 1`);
-        }, duration - 10)
+        if(!!ele){
+            // renders container (timer is to hide until ready)
+            let _style = `position: absolute; top: 0; left: 0; width: 100%; height: 100%;`
+            ele.setAttribute('style', `${_style}; opacity: 0`);
+            setTimeout(() => {
+                ele.setAttribute('style', `${_style}; opacity: 1`);
+            }, duration - 10)
 
-        // renders background image
-        ele.innerHTML = `
-            <div style='width: calc(100% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
-                <div style='width: 100%;height: 100%; display: flex;align-items: center; justify-content: center;color: white;'>
-                    <div style='background: url(${image}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%; opacity: 1'></div>
-                </div>
-            </div>                    
-        `   
+            // renders background image
+            ele.innerHTML = `
+                <div style='width: calc(100% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
+                    <div style='width: 100%;height: 100%; display: flex;align-items: center; justify-content: center;color: white;'>
+                        <div style='background: url(${image}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%; opacity: 1'></div>
+                    </div>
+                </div>                    
+        ` 
+        }  
     }
 
     hideUnderlay(){
         let {randomId} = this
         let ele = document.querySelector(`#${randomId} .__underlay`);
-        ele.innerHTML = `
-            <div></div>
-        `    
+        if(!!ele){
+            ele.innerHTML = `
+                <div></div>
+            `    
+        }
     }
 
     setOverlay(image, callback = () => {}){

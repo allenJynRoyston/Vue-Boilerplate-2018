@@ -1,11 +1,13 @@
 <template lang="pug">
-  div
-    //- br
-    //- a
-    //-   router-link(to="/") Home
-    //- a
-    //-   router-link(to="/about") About
-    //- br
+  header
+    a
+      router-link(to="/") Use
+    a
+      router-link(to="/examples") Examples      
+    a
+      router-link(to="/install") Install
+    a(href='https://github.com/allenRoyston/VJ-Slider' target="_blank") 
+      a Github      
 </template>
 
 <script>
@@ -21,7 +23,7 @@ export default {
   },
   methods: {
     async foo(){
-      console.log( "Async works in Navigation!" )
+      
     },
     async bar(){
       await this.foo();
@@ -32,7 +34,24 @@ export default {
 
 
 <style lang="sass" scoped>
-  a
+  header    
+    padding: 20px 0px
     text-decoration: none
     margin-left: 5px
+    display: flex
+    align-items: center
+    justify-content: center
+    color: white
+
+    a
+      text-decoration: none
+      margin-left: 5px
+      margin-right: 5%
+      color: white
+      font-size: 2rem
+
+    @media (min-width: 20em) and (max-width: 46.24em) 
+      a
+        font-size: 1rem
+          
 </style>
