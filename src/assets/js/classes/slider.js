@@ -197,7 +197,7 @@ export class VJSlider {
               </div>
 
               <!-- LOADING -->
-              <div class='__loading' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0'>
+              <div class='__loading' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none'>
                 ${this.HTMLSnippets.lazyloader}                
               </div>              
     
@@ -335,16 +335,16 @@ export class VJSlider {
             img.setAttribute('src', image)    
             img.setAttribute('alt', image)          
             const loadEL = () => {            
-                img.removeEventListener('load', loadEL)       
+                img.removeEventListener('load', loadEL)                     
                 setTimeout(() => {
                     callback()
-                }, 200)            
+                }, 1)   
             }
             const errorEL = () => {                             
-                img.removeEventListener('error', errorEL)
+                img.removeEventListener('error', errorEL)                
                 setTimeout(() => {
                     callback()
-                }, 200)               
+                }, 1)           
             } 
         
             img.addEventListener('load', loadEL)
@@ -373,7 +373,7 @@ export class VJSlider {
         `   
     }    
 
-    setUnderlay(image, duration){
+    setUnderlay(image, duration, callback = () => {}){
         let {randomId, options} = this
         let ele = document.querySelector(`#${randomId} .__underlay`);  
 
@@ -394,6 +394,14 @@ export class VJSlider {
                 </div>                    
         ` 
         }  
+        if(options.lazyload){
+            this.preloadImage(image, () => {
+                callback()
+            })        
+        }
+        else{
+            callback()
+        }
     }
 
     hideUnderlay(){
@@ -511,10 +519,10 @@ export class VJSlider {
         this.animateText(false)
         
         const completed = () => {                        
+        this.lock(false)
           this.setActiveCard(() => {
             this.resetPosition(false)
-            this.hideUnderlay()
-            this.lock(false)
+            this.hideUnderlay()            
             callback()                
           })
         }
@@ -528,21 +536,22 @@ export class VJSlider {
 
             switch(options.type){
                 case 'slide':
-                    this.setUnderlay(images[currentImage].src, duration)
-                    cards[this.determineType()].forEach((card, index) => {  
-                        this.setImageLoading(false)                        
-                        anime({
-                            targets: card,
-                            duration, 
-                            easing: options.easing,
-                            translateX: reversed ? `-100%` : `100%`,
-                            complete: () => {
-                                if(index === 1){
-                                    completed();
-                                    end()
+                    this.setUnderlay(images[currentImage].src, duration, () => {
+                        cards[this.determineType()].forEach((card, index) => {  
+                            this.setImageLoading(false)                        
+                            anime({
+                                targets: card,
+                                duration, 
+                                easing: options.easing,
+                                translateX: reversed ? `-100%` : `100%`,
+                                complete: () => {
+                                    if(index === 1){
+                                        completed();
+                                        end()
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        })
                     })
                 break
                 case 'slip':
@@ -797,21 +806,22 @@ export class VJSlider {
 
             switch(options.type){
                 case 'cascade':
-                    this.setUnderlay(images[currentImage].src, duration)
-                    cards[this.determineType()].forEach((card, index) => {
-                        this.setImageLoading(false)  
-                        anime({
-                            targets: card,
-                            duration, 
-                            easing: options.easing,
-                            translateY: reversed ? `-100%` : `100%`,
-                            complete: () => {
-                                if(index === 1){
-                                    completed()
-                                    end()
-                                }
-                            }                    
-                        });
+                    this.setUnderlay(images[currentImage].src, duration, () => {
+                        cards[this.determineType()].forEach((card, index) => {
+                            this.setImageLoading(false)  
+                            anime({
+                                targets: card,
+                                duration, 
+                                easing: options.easing,
+                                translateY: reversed ? `-100%` : `100%`,
+                                complete: () => {
+                                    if(index === 1){
+                                        completed()
+                                        end()
+                                    }
+                                }                    
+                            });
+                        })
                     })
                 break
                 case 'waterfall':
