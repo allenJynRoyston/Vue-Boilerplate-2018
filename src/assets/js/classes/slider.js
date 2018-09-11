@@ -336,7 +336,7 @@ export class VJSlider {
     }
 
     setImageLoading(state){
-      console.log(state)
+      
     }
 
     removeImageOnCard(cardIndex = 0){
