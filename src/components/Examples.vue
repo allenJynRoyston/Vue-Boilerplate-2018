@@ -7,11 +7,11 @@
       .col-xs-12.col-md-4(v-for='type in types')   
         p {{type.title}}
         hr
-        .vj-slider(dots controls v-bind:type='type.title')    
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )   
+        .vj-slider(dots controls v-bind:type='type.title' lazyload)    
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')   
         xmp  
           textarea 
             |
@@ -28,10 +28,10 @@
         p No dots or arrows
         hr      
         .vj-slider(controls)   
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )     
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')   
         xmp  
           textarea 
             |
@@ -43,10 +43,10 @@
         p No controls
         hr      
         .vj-slider(dots)   
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )     
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')   
         xmp  
           textarea 
             |
@@ -56,19 +56,19 @@
             |   
       .col-xs-12.col-md-4
         p Autoplay
-        //- hr      
+        hr      
         //- .vj-slider(autoplay)   
         //-   data(image='https://picsum.photos/600/400?image=111'  )
         //-   data(image='https://picsum.photos/600/400?image=222'  )
         //-   data(image='https://picsum.photos/600/400?image=178'  )
         //-   data(image='https://picsum.photos/600/400?image=444'  )     
-        //- xmp  
-        //-   textarea 
-        //-     |
-        //-     |<div class='vj-slider' autoplay delay=2000 interval=3000> 
-        //-     |   <!-- INSERT IMAGES HERE -->
-        //-     |</div>     
-        //-     |     
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider' autoplay delay=2000 interval=3000> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |     
 
     div(style='margin: 50px')
     h1 Variations
@@ -79,10 +79,10 @@
         p Custom elements (Example 1)
         hr
         .vj-slider(dots controls arrowdots size='large')   
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )      
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')    
 
           data(type='dots' html='X')
           data(type='leftarrowdot' html='<')
@@ -111,10 +111,10 @@
         p Custom elements (Font Awesome example)
         hr
         .vj-slider(dots controls arrowdots size='large')   
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )   
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')   
 
           data(type='dots' html='<i class="fas fa-circle"></i>')
           data(type='leftarrowdot' html='<i class="fas fa-arrow-left"></i>')
@@ -148,10 +148,10 @@
         p Animated Text
         hr
         .vj-slider(dots controls arrowdots size='large')   
-          data(image='https://picsum.photos/600/400?image=111' header='Image 1' footer='Lorem ipsum is the best phrase' )
-          data(image='https://picsum.photos/600/400?image=222' header='Image 2' footer='Lorem ipsum is the best phrase' )
-          data(image='https://picsum.photos/600/400?image=178' header='Image 3' footer='Lorem ipsum is the best phrase' )
-          data(image='https://picsum.photos/600/400?image=444' header='Image 4' footer='Lorem ipsum is the best phrase' )                     
+          data(:image='img1' header='Image 1' footer='Lorem ipsum is the best phrase' )
+          data(:image='img2' header='Image 2' footer='Lorem ipsum is the best phrase' )
+          data(:image='img3' header='Image 3' footer='Lorem ipsum is the best phrase' )
+          data(:image='img4' header='Image 4' footer='Lorem ipsum is the best phrase' )                     
         xmp  
           textarea 
             |
@@ -173,10 +173,10 @@
         p Small
         hr      
         .vj-slider(size='small' controls)   
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )     
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')     
         xmp  
           textarea 
             |
@@ -188,10 +188,10 @@
         p Default
         hr      
         .vj-slider(controls)      
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )     
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')   
         xmp  
           textarea 
             |
@@ -203,21 +203,67 @@
         p Large
         hr      
         .vj-slider(size='large' controls)   
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )     
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')   
         xmp  
           textarea 
             |
             |<div class='vj-slider' size='large'> 
             |   <!-- INSERT IMAGES HERE -->
             |</div>     
-            |               
+            |  
+
+    div(style='margin: 50px')
+    h1 Lazyloading
+    hr
+    div(style='margin: 50px')  
+    .row
+      .col-xs-12.col-md-6
+        p Default 
+        hr      
+        .vj-slider(controls lazyload)   
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')      
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider'> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |                 
+
+      .col-xs-12.col-md-6
+        p Custom spinner 
+        hr      
+        .vj-slider(controls lazyload)   
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')      
+          
+          data(type='lazyloader' html="<i class='fa-3x fas fa-spinner fa-spin' style='color: white'></i>")
+
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider' lazyload> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |         
+            |<data type='lazyloader' html='<i class="fa-3x fas fa-spinner fa-spin" style="color: white"></i>'></div>                  
+            |
 </template>
 
 <script>
 import {VJSlider} from '../assets/js/classes/slider'
+import img1 from "../assets/images/img1.jpg"
+import img2 from "../assets/images/img2.jpg"
+import img3 from "../assets/images/img3.jpg"
+import img4 from "../assets/images/img4.jpg"
 
 export default {
   data () {
@@ -238,8 +284,9 @@ export default {
         {title: 'unflip'},
         {title: 'fold'},
         {title: 'unfold'}
-      ]
-    }
+      ],
+      img1, img2, img3, img4
+    } 
   },
   mounted: function () {
     document.querySelectorAll('.vj-slider').forEach(ele => {

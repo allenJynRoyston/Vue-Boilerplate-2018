@@ -12,6 +12,7 @@ export class VJSlider {
             type:  (!!this.ele.getAttribute('type')) ? this.ele.getAttribute('type') : 'slide',
             easing: (!!this.ele.getAttribute('easing')) ? this.ele.getAttribute('easing') : 'easeInOutQuart',
             size: (!!this.ele.getAttribute('size')) ? this.ele.getAttribute('size') : 'default',
+            lazyload: (!!this.ele.getAttribute('lazyload')) ? this.ele.getAttribute('lazyload')  === 'lazyload' || this.ele.getAttribute('lazyload')  === 'true' : false,
             showText: (!!this.ele.getAttribute('text')) ? this.ele.getAttribute('text') === 'true' || this.ele.getAttribute('text')  === 'true' : true, 
             showControls: (!!this.ele.getAttribute('controls')) ? this.ele.getAttribute('controls')  === 'controls' || this.ele.getAttribute('controls')  === 'true' : false,
             showDots: (!!this.ele.getAttribute('dots')) ? this.ele.getAttribute('dots') === 'dots' || this.ele.getAttribute('dots')  === 'true' : false,
@@ -29,7 +30,8 @@ export class VJSlider {
           leftarrowdot: '&ltrif;',
           rightarrowdot: '&rtrif;',
           leftbtn: '<',
-          rightbtn: '>'
+          rightbtn: '>',
+          lazyloader: '<span style="color: white">Please wait</span>'
         }        
 
         this.cards = {
@@ -79,7 +81,10 @@ export class VJSlider {
             break  
             case 'leftbtn':
               this.HTMLSnippets.leftbtn = !!ele.getAttribute('html') ? ele.getAttribute('html') : ''              
-            break                                    
+            break   
+            case 'lazyloader':
+              this.HTMLSnippets.lazyloader = !!ele.getAttribute('html') ? ele.getAttribute('html') : ''              
+            break                                                
           }
           // remove original image from dom
           this.ele.removeChild(ele);
@@ -190,6 +195,11 @@ export class VJSlider {
               <div class='__overlay' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%'>
 
               </div>
+
+              <!-- LOADING -->
+              <div class='__loading' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0'>
+                ${this.HTMLSnippets.lazyloader}                
+              </div>              
     
               <!-- BUTTONS -->
               <div class='vj-slider--button-left __button '>
@@ -318,25 +328,42 @@ export class VJSlider {
         return options.type === 'cascade' || options.type === 'waterfall' ? 'v' : 'h'
     }
 
-    preloadImage(image, callback = () => {}){                
-        var img = document.querySelector('.__imagepreloader')
-        img.setAttribute('src', image)    
-        img.setAttribute('alt', image)          
-        const loadEL = () => {            
-            img.removeEventListener('load', loadEL)       
-            callback()                
+    preloadImage(image, callback = () => {}){   
+        let {options} = this;
+        if(options.lazyload){
+            var img = document.querySelector('.__imagepreloader')
+            img.setAttribute('src', image)    
+            img.setAttribute('alt', image)          
+            const loadEL = () => {            
+                img.removeEventListener('load', loadEL)       
+                setTimeout(() => {
+                    callback()
+                }, 200)            
+            }
+            const errorEL = () => {                             
+                img.removeEventListener('error', errorEL)
+                setTimeout(() => {
+                    callback()
+                }, 200)               
+            } 
+        
+            img.addEventListener('load', loadEL)
+            img.addEventListener('error', errorEL)    
         }
-        const errorEL = () => {                             
-            img.removeEventListener('error', errorEL)
-            callback()                 
-        } 
-    
-        img.addEventListener('load', loadEL)
-        img.addEventListener('error', errorEL)    
+        else{
+            setTimeout(() => {
+                callback()
+            }, 25)
+        }
     }
 
     setImageLoading(state){
-      
+        let {randomId, options} = this
+        if(options.lazyload){
+            let ele = document.querySelector(`#${randomId} .__loading`);  
+            ele.style.backgroundColor = `rgba(0, 0, 0, ${state ? 0.5  : 0})` 
+            ele.style.opacity =  state ? 1 : 0
+        }
     }
 
     removeImageOnCard(cardIndex = 0){
@@ -448,8 +475,7 @@ export class VJSlider {
         this.previousImage = this.currentImage
         this.currentImage = this.getPrev(1)    
         this.setImageLoading(true)
-        this.setImageOnCard(2, this.currentImage, () => {    
-            this.setImageLoading(false)
+        this.setImageOnCard(2, this.currentImage, () => {                
             this.animate(true, () => {
                 
             })
@@ -531,6 +557,7 @@ export class VJSlider {
                         anime({
                             targets: document.querySelector(`#${randomId} .__overlay`),
                             easing: options.easing,
+                            duration,
                             translateX: 0,
                             complete: () => {
                                 this.setActiveCard()
@@ -564,6 +591,7 @@ export class VJSlider {
                     _overlay.style.transform = 'scale(1) rotate(0)'                        
                     this.setOverlay(images[previousImage].src, () => {                       
                         this.setActiveCard(() => {
+                          this.setImageLoading(false)    
                           anime.timeline()              
                               .add({
                                   targets: document.querySelector(`#${randomId} .__overlay`),
@@ -584,19 +612,20 @@ export class VJSlider {
                     _overlay.style.transform = 'scale(1) rotate(0)'
                     this.setOverlay(images[previousImage].src, () => {                       
                         this.setActiveCard(() => {
-                          anime.timeline()                 
-                              .add({
-                                  targets: document.querySelector(`#${randomId} .__overlay`),
-                                  duration: duration, 
-                                  easing: options.easing,
-                                  rotate:  !reversed ? 20 : -20,
-                                  scale:  !reversed ? 1.25 : 0.95,
-                                  opacity: 0,
-                                  complete: () => {
-                                      this.lock(false)
-                                      end()
-                                  }
-                              })
+                            this.setImageLoading(false)    
+                            anime.timeline()                 
+                                .add({
+                                    targets: document.querySelector(`#${randomId} .__overlay`),
+                                    duration: duration, 
+                                    easing: options.easing,
+                                    rotate:  !reversed ? 20 : -20,
+                                    scale:  !reversed ? 1.25 : 0.95,
+                                    opacity: 0,
+                                    complete: () => {
+                                        this.lock(false)
+                                        end()
+                                    }
+                                })
                         })
                     })                                
                 break  
@@ -605,7 +634,8 @@ export class VJSlider {
                     _overlay.style.opacity = 1                  
                     this.setOverlay(images[previousImage].src, () => {                       
                         this.setActiveCard(() => {
-                          anime.timeline()                
+                            this.setImageLoading(false)    
+                            anime.timeline()                
                               .add({
                                   targets: document.querySelector(`#${randomId} .__overlay`),
                                   duration: duration, 
@@ -628,7 +658,8 @@ export class VJSlider {
                     _overlay.style.opacity = 1  
                     this.setOverlay(images[currentImage].src, () => {                       
                         this.setActiveCard(() => {
-                          anime.timeline()                 
+                            this.setImageLoading(false)    
+                            anime.timeline()                 
                               .add({
                                   targets: document.querySelector(`#${randomId} .__overlay`),
                                   duration: duration, 
@@ -647,7 +678,8 @@ export class VJSlider {
                     _overlay.style.transform = 'scale(100)'
                     this.setOverlay(images[currentImage].src, () => {                       
                         this.setActiveCard(() => {
-                          anime.timeline()             
+                            this.setImageLoading(false)    
+                            anime.timeline()             
                               .add({
                                   targets: document.querySelector(`#${randomId} .__overlay`),
                                   duration: duration, 
@@ -658,7 +690,7 @@ export class VJSlider {
                                       this.lock(false)
                                       end()
                                   }
-                              })
+                                })
                         })
                     })                                
                 break    
@@ -666,6 +698,7 @@ export class VJSlider {
                     _overlay.style.transform = `scale(10) rotate(${reversed ? -240 : 240}deg)`
                     this.setOverlay(images[currentImage].src, () => {                       
                         this.setActiveCard(() => {
+                          this.setImageLoading(false)    
                           anime.timeline()                
                               .add({
                                   targets: document.querySelector(`#${randomId} .__overlay`),
@@ -686,6 +719,7 @@ export class VJSlider {
                     _overlay.style.transform = `scaleY(1)`     
                     this.setOverlay(images[previousImage].src, () => {                       
                       this.setActiveCard(() => {
+                        this.setImageLoading(false)    
                         anime.timeline()                   
                             .add({
                                 targets: document.querySelector(`#${randomId} .__overlay`),
@@ -704,6 +738,7 @@ export class VJSlider {
                     _overlay.style.transform = `scaleX(1)`     
                     this.setOverlay(images[previousImage].src, () => {                       
                       this.setActiveCard(() => {
+                        this.setImageLoading(false)    
                         anime.timeline()                 
                             .add({
                                 targets: document.querySelector(`#${randomId} .__overlay`),
@@ -720,7 +755,8 @@ export class VJSlider {
                 break    
                 case 'unfold':       
                   _overlay.style.transform = `scaleX(0)`          
-                  this.setOverlay(images[currentImage].src, () => {                       
+                  this.setOverlay(images[currentImage].src, () => {   
+                      this.setImageLoading(false)                        
                       anime.timeline()                
                           .add({
                               targets: document.querySelector(`#${randomId} .__overlay`),
@@ -737,7 +773,8 @@ export class VJSlider {
                 break
                 case 'unflip':    
                   _overlay.style.transform = `scaleY(0)`         
-                  this.setOverlay(images[currentImage].src, () => {                       
+                  this.setOverlay(images[currentImage].src, () => {      
+                      this.setImageLoading(false)                     
                       anime.timeline()                  
                           .add({
                               targets: document.querySelector(`#${randomId} .__overlay`),
@@ -780,10 +817,12 @@ export class VJSlider {
                 case 'waterfall':
                 _overlay.style.transform = `translateY(${reversed ? `100%` : `-100%`})`   
                 this.hideOverlay()                    
-                    this.setOverlay(images[currentImage].src, () => {                                    
+                    this.setOverlay(images[currentImage].src, () => {   
+                        this.setImageLoading(false)                                     
                         anime({
                             targets: document.querySelector(`#${randomId}  .__overlay`),
                             easing: options.easing,
+                            duration,
                             translateY: 0,
                             complete: () => {
                                 this.setActiveCard()
