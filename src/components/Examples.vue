@@ -56,19 +56,19 @@
             |   
       .col-xs-12.col-md-4
         p Autoplay
-        hr      
-        .vj-slider(autoplay)   
-          data(image='https://picsum.photos/600/400?image=111'  )
-          data(image='https://picsum.photos/600/400?image=222'  )
-          data(image='https://picsum.photos/600/400?image=178'  )
-          data(image='https://picsum.photos/600/400?image=444'  )     
-        xmp  
-          textarea 
-            |
-            |<div class='vj-slider' autoplay delay=2000 interval=3000> 
-            |   <!-- INSERT IMAGES HERE -->
-            |</div>     
-            |     
+        //- hr      
+        //- .vj-slider(autoplay)   
+        //-   data(image='https://picsum.photos/600/400?image=111'  )
+        //-   data(image='https://picsum.photos/600/400?image=222'  )
+        //-   data(image='https://picsum.photos/600/400?image=178'  )
+        //-   data(image='https://picsum.photos/600/400?image=444'  )     
+        //- xmp  
+        //-   textarea 
+        //-     |
+        //-     |<div class='vj-slider' autoplay delay=2000 interval=3000> 
+        //-     |   <!-- INSERT IMAGES HERE -->
+        //-     |</div>     
+        //-     |     
 
     div(style='margin: 50px')
     h1 Variations
@@ -223,11 +223,14 @@ export default {
   data () {
     return {
       types: [
+        {title: 'slide'},
         {title: 'slip'},
         {title: 'fade'},
         {title: 'cascade'},
         {title: 'waterfall'},
         {title: 'leaf'},
+        {title: 'grow'},
+        {title: 'skew'},
         {title: 'warpspeed'},
         {title: 'hyperzoom'},
         {title: 'newsroom'},

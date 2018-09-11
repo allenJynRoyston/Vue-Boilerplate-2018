@@ -7,7 +7,7 @@ export class VJSlider {
         this.currentImage = 0        
         this.options = {
             padding: (!!this.ele.getAttribute('padding')) ? parseInt(this.ele.getAttribute('padding')) : 0,
-            speed: (!!this.ele.getAttribute('speed')) ? parseInt(this.ele.getAttribute('speed')) : 700,
+            speed: (!!this.ele.getAttribute('speed')) ? parseInt(this.ele.getAttribute('speed')) : 400,
             height: (!!this.ele.getAttribute('height')) ? parseInt(this.ele.getAttribute('height')) : 400,            
             type:  (!!this.ele.getAttribute('type')) ? this.ele.getAttribute('type') : 'slide',
             easing: (!!this.ele.getAttribute('easing')) ? this.ele.getAttribute('easing') : 'easeInOutQuart',
@@ -21,8 +21,8 @@ export class VJSlider {
               delay: (!!this.ele.getAttribute('delay')) ? parseInt(this.ele.getAttribute('delay')) : 2000,
               interval: (!!this.ele.getAttribute('interval')) ? parseInt(this.ele.getAttribute('interval')) : 3000,
               event: null
-            }
-        }
+            },            
+        }        
 
         this.HTMLSnippets = {
           dots: '&squf;',
@@ -89,8 +89,6 @@ export class VJSlider {
         if(this.images.length === 0){
           this.images = [{src: ''}]
         }
-
-        console.log()
 
         this.inputElements = []
         this.init()
@@ -298,11 +296,11 @@ export class VJSlider {
 
 
     
-    setActiveCard(){
+    setActiveCard(callback = () => {}){
         let {images, cards, currentImage} = this;
         cards[this.determineType()].forEach((card, index) => {   
             if(index === 1){
-                this.setImageOnCard(index, currentImage)             
+                this.setImageOnCard(index, currentImage, callback)             
             }                      
         })    
     }
@@ -315,8 +313,6 @@ export class VJSlider {
         this.preloadImage(images[imageIndex].src, callback)
     }
 
-    
-
     determineType(){
         let {options} = this
         return options.type === 'cascade' || options.type === 'waterfall' ? 'v' : 'h'
@@ -325,18 +321,22 @@ export class VJSlider {
     preloadImage(image, callback = () => {}){                
         var img = document.querySelector('.__imagepreloader')
         img.setAttribute('src', image)    
-        img.setAttribute('alt', image)   
-        const loadEL = () => {
-            img.removeEventListener('load', loadEL)
-            callback()            
+        img.setAttribute('alt', image)          
+        const loadEL = () => {            
+            img.removeEventListener('load', loadEL)       
+            callback()                
         }
-        const errorEL = () => {                   
+        const errorEL = () => {                             
             img.removeEventListener('error', errorEL)
-            callback()            
+            callback()                 
         } 
     
         img.addEventListener('load', loadEL)
-        img.addEventListener('error', errorEL)      
+        img.addEventListener('error', errorEL)    
+    }
+
+    setImageLoading(state){
+      console.log(state)
     }
 
     removeImageOnCard(cardIndex = 0){
@@ -435,7 +435,8 @@ export class VJSlider {
         let {images} = this;
         this.previousImage = this.currentImage
         this.currentImage = this.getNext(1)        
-        this.setImageOnCard(0, this.currentImage, () => {
+        this.setImageLoading(true)
+        this.setImageOnCard(0, this.currentImage, () => {            
             this.animate(false, () => {
             
             })            
@@ -446,7 +447,9 @@ export class VJSlider {
         let {images} = this;
         this.previousImage = this.currentImage
         this.currentImage = this.getPrev(1)    
+        this.setImageLoading(true)
         this.setImageOnCard(2, this.currentImage, () => {    
+            this.setImageLoading(false)
             this.animate(true, () => {
                 
             })
@@ -476,27 +479,22 @@ export class VJSlider {
 
     animate(reversed = false, callback = () => {}){
         let {images, currentImage, previousImage, randomId, cards, options} = this;
+        let _overlay = document.querySelector(`#${randomId} .__overlay`) 
         let duration = options.speed;
         this.markActiveDot();
         this.animateText(false)
         
-        const completed = () => {            
-            setTimeout(() => {            
-                this.resetPosition(true)
-            }, 10)
-            setTimeout(() => {
-                this.setActiveCard()
-                this.resetPosition(false)
-            }, 50)
-            setTimeout(() => {            
-                this.hideUnderlay()
-                this.lock(false)
-                callback()
-            }, 200)               
+        const completed = () => {                        
+          this.setActiveCard(() => {
+            this.resetPosition(false)
+            this.hideUnderlay()
+            this.lock(false)
+            callback()                
+          })
         }
 
         const end = () => {
-          this.animateText(true)
+          this.animateText(true)        
         }
 
         // horizontal/overlay sliders
@@ -505,7 +503,8 @@ export class VJSlider {
             switch(options.type){
                 case 'slide':
                     this.setUnderlay(images[currentImage].src, duration)
-                    cards[this.determineType()].forEach((card, index) => {
+                    cards[this.determineType()].forEach((card, index) => {  
+                        this.setImageLoading(false)                        
                         anime({
                             targets: card,
                             duration, 
@@ -525,15 +524,14 @@ export class VJSlider {
                     anime({
                         targets: document.querySelector(`#${randomId} .__overlay`),
                         duration: 0, 
-                        translateX: reversed ? `-100%` : `100%`,
-                        delay: 200                        
+                        translateX: reversed ? `-100%` : `100%`,                     
                     })                       
-                    this.setOverlay(images[currentImage].src, () => {                                    
+                    this.setOverlay(images[currentImage].src, () => {    
+                        this.setImageLoading(false)                                                        
                         anime({
                             targets: document.querySelector(`#${randomId} .__overlay`),
                             easing: options.easing,
                             translateX: 0,
-                            delay: 200,
                             complete: () => {
                                 this.setActiveCard()
                                 this.lock(false)
@@ -542,189 +540,153 @@ export class VJSlider {
                         })                                                
                     })
                 break                
-                case 'fade':                        
-                    this.setOverlay(images[previousImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,                                
-                            })                    
-                            .add({
-                                targets: document.querySelector(`#${this.randomId} .__overlay`),
-                                duration: duration, 
-                                easing: 'linear',
-                                opacity: 0,
-                                complete: () => {
-                                    this.lock(false)
-                                    end()
-                                }
-                            })
+                case 'fade':     
+                    _overlay.style.opacity = 1                                           
+                    this.setOverlay(images[previousImage].src, () => {    
+                        this.setActiveCard(() => {  
+                          this.setImageLoading(false)          
+                          anime.timeline()                  
+                              .add({
+                                  targets: document.querySelector(`#${this.randomId} .__overlay`),
+                                  duration: duration, 
+                                  easing: 'linear',
+                                  opacity: 0,
+                                  complete: () => {
+                                      this.lock(false)
+                                      end()
+                                  }
+                              })
+                      })
                     })                                
                 break  
-                case 'grow':            
+                case 'grow':    
+                    _overlay.style.opacity = 1           
+                    _overlay.style.transform = 'scale(1) rotate(0)'                        
                     this.setOverlay(images[previousImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,  
-                                scale: 1                         
-                            })                    
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: duration, 
-                                easing: options.easing,
-                                scale:  !reversed ? 1.25 : 0.95,
-                                opacity: 0,
-                                complete: () => {
-                                    this.lock(false)
-                                    end()
-                                }
-                            })
+                        this.setActiveCard(() => {
+                          anime.timeline()              
+                              .add({
+                                  targets: document.querySelector(`#${randomId} .__overlay`),
+                                  duration: duration, 
+                                  easing: options.easing,
+                                  scale:  !reversed ? 1.25 : 0.95,
+                                  opacity: 0,
+                                  complete: () => {
+                                      this.lock(false)
+                                      end()
+                                  }
+                              })
+                        })                            
                     })                                
                 break  
-                case 'warp':            
+                case 'skew':        
+                    _overlay.style.opacity = 1           
+                    _overlay.style.transform = 'scale(1) rotate(0)'
                     this.setOverlay(images[previousImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,  
-                                rotate: 0                         
-                            })                    
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: duration, 
-                                easing: options.easing,
-                                rotate:  !reversed ? 20 : -20,
-                                scale:  !reversed ? 1.25 : 0.95,
-                                opacity: 0,
-                                complete: () => {
-                                    this.lock(false)
-                                    end()
-                                }
-                            })
+                        this.setActiveCard(() => {
+                          anime.timeline()                 
+                              .add({
+                                  targets: document.querySelector(`#${randomId} .__overlay`),
+                                  duration: duration, 
+                                  easing: options.easing,
+                                  rotate:  !reversed ? 20 : -20,
+                                  scale:  !reversed ? 1.25 : 0.95,
+                                  opacity: 0,
+                                  complete: () => {
+                                      this.lock(false)
+                                      end()
+                                  }
+                              })
+                        })
                     })                                
                 break  
                 case 'leaf':            
+                    _overlay.style.transform = `translateX(0) translateY(0) scale(1) rotate(0)`        
+                    _overlay.style.opacity = 1                  
                     this.setOverlay(images[previousImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,  
-                                rotate: 0                         
-                            })                    
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: duration, 
-                                easing: options.easing,
-                                rotate:  reversed ? -45 : 45,
-                                scale:  reversed ? 0.9 : 1.25,
-                                translateX: reversed ? '-50%' : '50%',
-                                translateY: reversed ? '-50%' : '50%',
-                                opacity: 0,
-                                complete: () => {
-                                    this.lock(false)
-                                    end()
-                                }
-                            })
+                        this.setActiveCard(() => {
+                          anime.timeline()                
+                              .add({
+                                  targets: document.querySelector(`#${randomId} .__overlay`),
+                                  duration: duration, 
+                                  easing: options.easing,
+                                  rotate:  reversed ? -45 : 45,
+                                  scale:  reversed ? 0.9 : 1.25,
+                                  translateX: reversed ? '-50%' : '50%',
+                                  translateY: reversed ? '-50%' : '50%',
+                                  opacity: 0,
+                                  complete: () => {
+                                      this.lock(false)
+                                      end()
+                                  }
+                              })
+                        })
                     })                                
                 break        
-                case 'warpspeed':            
+                case 'warpspeed':     
+                    _overlay.style.transform = `scaleX(100)`        
+                    _overlay.style.opacity = 1  
                     this.setOverlay(images[currentImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,  
-                                scaleX: 100                         
-                            })                    
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: duration, 
-                                easing: options.easing,                                
-                                scaleX: 5,
-                                opacity: 0,
-                                complete: () => {
-                                    this.lock(false)
-                                    end()
-                                }
-                            })
+                        this.setActiveCard(() => {
+                          anime.timeline()                 
+                              .add({
+                                  targets: document.querySelector(`#${randomId} .__overlay`),
+                                  duration: duration, 
+                                  easing: options.easing,                                
+                                  scaleX: 5,
+                                  opacity: 0,
+                                  complete: () => {
+                                      this.lock(false)
+                                      end()
+                                  }
+                              })
+                        })
                     })                                
                 break  
-                case 'hyperzoom':            
+                case 'hyperzoom':                               
+                    _overlay.style.transform = 'scale(100)'
                     this.setOverlay(images[currentImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,  
-                                scale: 100                         
-                            })                    
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: duration, 
-                                easing: options.easing,                                
-                                scale: 1,
-                                opacity: 1,
-                                complete: () => {
-                                    this.lock(false)
-                                    end()
-                                }
-                            })
+                        this.setActiveCard(() => {
+                          anime.timeline()             
+                              .add({
+                                  targets: document.querySelector(`#${randomId} .__overlay`),
+                                  duration: duration, 
+                                  easing: options.easing,                                
+                                  scale: 1,
+                                  opacity: 1,
+                                  complete: () => {
+                                      this.lock(false)
+                                      end()
+                                  }
+                              })
+                        })
                     })                                
                 break    
-                case 'newsroom':            
+                case 'newsroom':       
+                    _overlay.style.transform = `scale(10) rotate(${reversed ? -240 : 240}deg)`
                     this.setOverlay(images[currentImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,  
-                                scale: 10,
-                                rotate: reversed ? -240 : 240                         
-                            })                    
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: duration, 
-                                easing: options.easing,                                
-                                scale: 1,
-                                rotate: 0,
-                                opacity: 1,
-                                complete: () => {
-                                    this.lock(false)
-                                    end()
-                                }
-                            })
+                        this.setActiveCard(() => {
+                          anime.timeline()                
+                              .add({
+                                  targets: document.querySelector(`#${randomId} .__overlay`),
+                                  duration: duration, 
+                                  easing: options.easing,                                
+                                  scale: 1,
+                                  rotate: 0,
+                                  opacity: 1,
+                                  complete: () => {
+                                      this.lock(false)
+                                      end()
+                                  }
+                              })
+                        })
                     })                                
                 break  
-                case 'flip':            
+                case 'flip':       
+                    _overlay.style.transform = `scaleY(1)`     
                     this.setOverlay(images[previousImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,  
-                                scaleY: 1,                    
-                            })                    
+                      this.setActiveCard(() => {
+                        anime.timeline()                   
                             .add({
                                 targets: document.querySelector(`#${randomId} .__overlay`),
                                 duration: duration, 
@@ -735,19 +697,14 @@ export class VJSlider {
                                     end()
                                 }
                             })
+                      })
                     }) 
                   break 
-                  case 'fold':            
+                  case 'fold':        
+                    _overlay.style.transform = `scaleX(1)`     
                     this.setOverlay(images[previousImage].src, () => {                       
-                        this.setActiveCard()
-                        anime.timeline()
-                            .add({
-                                targets: document.querySelector(`#${randomId} .__overlay`),
-                                duration: 0, 
-                                easing: 'linear',
-                                opacity: 1,  
-                                scaleX: 1,                    
-                            })                    
+                      this.setActiveCard(() => {
+                        anime.timeline()                 
                             .add({
                                 targets: document.querySelector(`#${randomId} .__overlay`),
                                 duration: duration, 
@@ -758,18 +715,13 @@ export class VJSlider {
                                     end()
                                 }
                             })
+                        })
                     })                                                    
                 break    
-                case 'unfold':            
+                case 'unfold':       
+                  _overlay.style.transform = `scaleX(0)`          
                   this.setOverlay(images[currentImage].src, () => {                       
-                      anime.timeline()
-                          .add({
-                              targets: document.querySelector(`#${randomId} .__overlay`),
-                              duration: 0, 
-                              easing: 'linear',
-                              opacity: 1,  
-                              scaleX: 0,                    
-                          })                    
+                      anime.timeline()                
                           .add({
                               targets: document.querySelector(`#${randomId} .__overlay`),
                               duration: duration, 
@@ -783,16 +735,10 @@ export class VJSlider {
                           })
                   }) 
                 break
-                case 'unflip':            
+                case 'unflip':    
+                  _overlay.style.transform = `scaleY(0)`         
                   this.setOverlay(images[currentImage].src, () => {                       
-                      anime.timeline()
-                          .add({
-                              targets: document.querySelector(`#${randomId} .__overlay`),
-                              duration: 0, 
-                              easing: 'linear',
-                              opacity: 1,  
-                              scaleY: 0,                    
-                          })                    
+                      anime.timeline()                  
                           .add({
                               targets: document.querySelector(`#${randomId} .__overlay`),
                               duration: duration, 
@@ -816,6 +762,7 @@ export class VJSlider {
                 case 'cascade':
                     this.setUnderlay(images[currentImage].src, duration)
                     cards[this.determineType()].forEach((card, index) => {
+                        this.setImageLoading(false)  
                         anime({
                             targets: card,
                             duration, 
@@ -831,19 +778,13 @@ export class VJSlider {
                     })
                 break
                 case 'waterfall':
-                this.hideOverlay()
-                    anime({
-                        targets: document.querySelector(`#${randomId}  .__overlay`),
-                        duration: 0, 
-                        translateY: reversed ? `100%` : `-100%`,
-                        delay: 200                        
-                    })                       
+                _overlay.style.transform = `translateY(${reversed ? `100%` : `-100%`})`   
+                this.hideOverlay()                    
                     this.setOverlay(images[currentImage].src, () => {                                    
                         anime({
                             targets: document.querySelector(`#${randomId}  .__overlay`),
                             easing: options.easing,
                             translateY: 0,
-                            delay: 200,
                             complete: () => {
                                 this.setActiveCard()
                                 this.lock(false)
@@ -862,13 +803,8 @@ export class VJSlider {
         let {cards} = this;
     
         cards[this.determineType()].forEach((card, index) => {
-            anime({
-                targets: card,
-                duration: 1,
-                translateX: 0,
-                translateY: 0,
-                opacity: hide ? 0 : 1,
-            });
+            card.style.transform = 'translate(0) scale(1)'
+            card.style.opacity = hide ? 0 : 1
             if(index === 0 || index === 2){
                 this.removeImageOnCard(index)
             }
