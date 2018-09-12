@@ -3,7 +3,7 @@
     h1 Touchscreen/Mobile devices
     hr
     div(style='margin: 50px')  
-    .row(style='margin-top: 100px')  
+    .row
       .col-xs-12.col-md-6
         h2 Touchscreen/mobile setup                
         div(style='margin: 10px')     
@@ -19,6 +19,7 @@
             |</div>     
             |    
 
+    div(style='margin: 50px')
     h1 Transitions
     hr
     div(style='margin: 50px')  
@@ -26,7 +27,7 @@
       .col-xs-12.col-md-4(v-for='type in types')   
         p {{type.title}}
         hr
-        .vj-slider(dots controls v-bind:type='type.title' preload)    
+        .vj-slider(dots controls v-bind:type='type.title' preload size='small')    
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
@@ -46,7 +47,7 @@
       .col-xs-12.col-md-4
         p No dots or arrows
         hr      
-        .vj-slider(controls)   
+        .vj-slider(controls size='small')   
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
@@ -61,7 +62,7 @@
       .col-xs-12.col-md-4
         p No controls
         hr      
-        .vj-slider(dots)   
+        .vj-slider(dots size='small')   
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
@@ -76,11 +77,11 @@
       .col-xs-12.col-md-4
         p Autoplay
         hr      
-        //- .vj-slider(autoplay)   
-        //-   data(image='https://picsum.photos/600/400?image=111'  )
-        //-   data(image='https://picsum.photos/600/400?image=222'  )
-        //-   data(image='https://picsum.photos/600/400?image=178'  )
-        //-   data(image='https://picsum.photos/600/400?image=444'  )     
+        .vj-slider(autoplay size='small')   
+          data(image='https://picsum.photos/600/400?image=111'  )
+          data(image='https://picsum.photos/600/400?image=222'  )
+          data(image='https://picsum.photos/600/400?image=178'  )
+          data(image='https://picsum.photos/600/400?image=444'  )     
         xmp  
           textarea 
             |
@@ -166,7 +167,7 @@
       .col-xs-12.col-md-8.col-md-offset-2
         p Animated Text
         hr
-        .vj-slider(dots controls arrowdots size='large')   
+        .vj-slider(dots controls arrowdots size='small')   
           data(:image='img1' header='Image 1' footer='Lorem ipsum is the best phrase' )
           data(:image='img2' header='Image 2' footer='Lorem ipsum is the best phrase' )
           data(:image='img3' header='Image 3' footer='Lorem ipsum is the best phrase' )
@@ -242,7 +243,7 @@
       .col-xs-12.col-md-6
         p Default 
         hr      
-        .vj-slider(controls lazyload)   
+        .vj-slider(controls lazyload size='small')   
           data(image='https://picsum.photos/1200/1400/?image=1082')
           data(image='https://picsum.photos/1200/1400/?image=1081')
           data(image='https://picsum.photos/1200/1400/?image=1080')
@@ -258,7 +259,7 @@
       .col-xs-12.col-md-6
         p Custom spinner 
         hr      
-        .vj-slider(controls lazyload)   
+        .vj-slider(controls lazyload size='small')   
           data(image='https://picsum.photos/1200/1400/?image=444')
           data(image='https://picsum.photos/1200/1400/?image=1084')
           data(image='https://picsum.photos/1200/1400/?image=1075')
@@ -283,7 +284,7 @@
       .col-xs-12.col-md-6
         p Preload 
         hr      
-        .vj-slider(controls preload)   
+        .vj-slider(controls preload size='small')   
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')

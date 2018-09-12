@@ -6,13 +6,13 @@
         hr       
         h2 VJ-Slider is a lightweight, yet powerful, slider made with basic ass vanilla Javascript (hence the name - eh, clever) and powered by AnimeJS.  No jQuery dependency. Simple installation and highly customizable. 
         div(style='margin: 10px')     
-        .vj-slider(controls dots)   
+        .vj-slider(controls dots size='small')   
           data(image='https://picsum.photos/400/400/?image=1082')
           data(image='https://picsum.photos/400/400/?image=1081')
           data(image='https://picsum.photos/400/400/?image=1080')
    
 
-    .row(style='margin-top: 100px')  
+    .row(style='margin-top: 50px')  
       .col-xs-12.col-md-6.col-md-offset-3
         h2 Touchscreen/mobile setup                
         div(style='margin: 10px')     
@@ -20,9 +20,27 @@
           data(image='https://picsum.photos/400/400/?image=1082')
           data(image='https://picsum.photos/400/400/?image=1081')
           data(image='https://picsum.photos/400/400/?image=1080')          
-         
+    
 
-
+    .row
+      div(style='margin: 20px')     
+      .col-xs-12.col-md-6      
+        h2 Insert HTML on to page
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider' touch> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |    
+      div(style='margin: 20px')     
+      .col-xs-12.col-md-6      
+        h2 Then execute in script
+        xmp  
+          textarea 
+            |
+            | import {VJSlider} from 'vjslider'
+            |            
                 
 </template>
 

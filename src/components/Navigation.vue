@@ -1,7 +1,7 @@
 <template lang="pug">
   header
     a
-      router-link(to="/") Use
+      router-link(to="/") Setup
     a
       router-link(to="/examples") Examples      
     a

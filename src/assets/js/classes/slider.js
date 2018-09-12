@@ -262,7 +262,7 @@ export class VJSlider {
           _layout.innerHTML =`
           <!-- container -->
           <div id='${this.randomId}' class='vj-slider--container' style='opacity: ${options.preload ? 0 : 1}'>
-            <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}'' style='width: 100%; padding: ${options.padding}px; position: relative; overflow-x: scroll'>
+            <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}'' style='width: 100%; padding: ${options.padding}px; position: relative; overflow-x: scroll; -webkit-overflow-scrolling: touch;'>
               <div style='position: absolute; top: 0; left: 0; width: ${images.length*100}%; height: 100%; display: block;'> 
                 ${touchSlides}
               </div>
