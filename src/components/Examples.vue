@@ -7,7 +7,7 @@
       .col-xs-12.col-md-4(v-for='type in types')   
         p {{type.title}}
         hr
-        .vj-slider(dots controls v-bind:type='type.title')    
+        .vj-slider(dots controls v-bind:type='type.title' preload)    
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
@@ -216,7 +216,7 @@
             |  
 
     div(style='margin: 50px')
-    h1 Lazyloading / Preloading
+    h1 Lazyloading
     hr
     div(style='margin: 50px')  
     .row
@@ -224,10 +224,10 @@
         p Default 
         hr      
         .vj-slider(controls lazyload)   
-          data(:image='img1')
-          data(:image='img2')
-          data(:image='img3')
-          data(:image='img4')      
+          data(image='https://picsum.photos/1200/1400/?image=1082')
+          data(image='https://picsum.photos/1200/1400/?image=1081')
+          data(image='https://picsum.photos/1200/1400/?image=1080')
+
         xmp  
           textarea 
             |
@@ -240,10 +240,9 @@
         p Custom spinner 
         hr      
         .vj-slider(controls lazyload)   
-          data(:image='img1')
-          data(:image='img2')
-          data(:image='img3')
-          data(:image='img4')      
+          data(image='https://picsum.photos/1200/1400/?image=444')
+          data(image='https://picsum.photos/1200/1400/?image=1084')
+          data(image='https://picsum.photos/1200/1400/?image=1075')
           
           data(type='lazyloader' html="<i class='fa-3x fas fa-spinner fa-spin' style='color: white'></i>")
 
@@ -255,26 +254,28 @@
             |</div>     
             |         
             |<data type='lazyloader' html='<i class="fa-3x fas fa-spinner fa-spin" style="color: white"></i>'></div>                  
-            |
+            |  
 
+    div(style='margin: 50px')
+    h1 Preloading
+    hr
+    div(style='margin: 50px')  
+    .row
       .col-xs-12.col-md-6
         p Preload 
         hr      
         .vj-slider(controls preload)   
-          data(image='https://picsum.photos/200/300/?image=1082')
-          data(image='https://picsum.photos/200/300/?image=1081')
-          data(image='https://picsum.photos/200/300/?image=1080')
-          data(image='https://picsum.photos/200/300/?image=1079')      
-          data(image='https://picsum.photos/200/300/?image=1078')      
-          data(image='https://picsum.photos/200/300/?image=1077')      
-          data(image='https://picsum.photos/200/300/?image=1076')      
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')    
         xmp  
           textarea 
             |
             |<div class='vj-slider' controls preload> 
             |   <!-- INSERT IMAGES HERE -->
             |</div>     
-            |                
+            |                           
 </template>
 
 <script>

@@ -23,8 +23,12 @@ export class VJSlider {
               delay: (!!this.ele.getAttribute('delay')) ? parseInt(this.ele.getAttribute('delay')) : 2000,
               interval: (!!this.ele.getAttribute('interval')) ? parseInt(this.ele.getAttribute('interval')) : 3000,
               event: null
-            },            
+            },   
+            lazyloadThreshold: 500,
+            lazyloadEvent: null         
         }        
+
+        
 
         this.HTMLSnippets = {
           dots: '&squf;',
@@ -291,7 +295,7 @@ export class VJSlider {
               }
             })
         })     
-        
+    
         // setup autoplay
         if(options.autoplay.active){
           setTimeout(() => {
@@ -320,11 +324,17 @@ export class VJSlider {
     }
 
     setImageOnCard(cardIndex = 0, imageIndex = 0, callback = () => {}){
-        let {cards, images} = this;
-        cards[this.determineType()][cardIndex].innerHTML = `
-            <div style='background: url(${images[imageIndex].src}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%'></div>
-        `   
-        this.preloadImage(images[imageIndex].src, callback)
+        let {cards, images, options} = this;
+        this.preloadImage(images[imageIndex].src, () => {
+          cards[this.determineType()][cardIndex].innerHTML = `
+              <div style='background: url(${images[imageIndex].src}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%'></div>
+          `   
+          
+          setTimeout(() => {
+            callback()
+          }, options.lazyload ? 100 : 1)
+        })
+       
     }
 
     determineType(){
@@ -336,8 +346,10 @@ export class VJSlider {
       let {images, randomId} = this
       let count = 0
       images.forEach((image) => {
-        this.preloadImage(image, () => {
-          fetch(image)
+        let img = document.querySelector('.__imagepreloader')
+        img.setAttribute('src', image.src)             
+        this.preloadImage(image.src, () => {
+          fetch(image.src)
             .then(data => {
               count++
               if(count === images.length){
@@ -352,24 +364,36 @@ export class VJSlider {
     preloadImage(image, callback = () => {}, force = false){   
         let {options} = this;
         if(options.lazyload){
+            let img = document.querySelector('.__imagepreloader')
+            img.setAttribute('src', image)              
             fetch(image)
-              .then(data => {
-                setTimeout(() => { callback()}, 1) 
+              .then(data => {                
+                callback()
               }) 
         }
         else{
-            setTimeout(() => {
-                callback()
-            }, 25)
+          callback()
         }
     }
 
     setImageLoading(state){
         let {randomId, options} = this
+        const renders = () => {
+          let ele = document.querySelector(`#${randomId} .__loading`);  
+          ele.style.backgroundColor = `rgba(0, 0, 0, ${state ? 0.5  : 0})` 
+          ele.style.opacity =  state ? 1 : 0          
+        }
+
         if(options.lazyload){
-            let ele = document.querySelector(`#${randomId} .__loading`);  
-            ele.style.backgroundColor = `rgba(0, 0, 0, ${state ? 0.5  : 0})` 
-            ele.style.opacity =  state ? 1 : 0
+          if(state){
+            options.lazyloadEvent = setTimeout(() => {
+              renders()
+            }, options.lazyloadThreshold)                  
+          }
+          else{
+            renders()
+            clearInterval(options.lazyloadEvent)  
+          }
         }
     }
 

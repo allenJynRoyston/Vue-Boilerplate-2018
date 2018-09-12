@@ -42,6 +42,9 @@ export default {
     align-items: center
     justify-content: center
     color: white
+    display: flex
+    align-items: center
+    justify-content: center
 
     a
       text-decoration: none
@@ -50,7 +53,7 @@ export default {
       color: white
       font-size: 2rem
 
-    @media (min-width: 20em) and (max-width: 46.24em) 
+    @media (min-width: 0em) and (max-width: 46.24em) 
       a
         font-size: 1rem
           

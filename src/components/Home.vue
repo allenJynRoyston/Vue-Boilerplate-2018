@@ -8,17 +8,17 @@
         div(style='margin: 50px')     
         p default
         hr
-        .vj-slider(dots controls arrowdots preload)   
-          data(image='https://picsum.photos/600/400?image=111' )
-          data(image='https://picsum.photos/600/400?image=222' )
-          data(image='https://picsum.photos/600/400?image=178' )
-          data(image='https://picsum.photos/600/400?image=444' )    
+        .vj-slider(dots controls preload)   
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')
 
         h2 In your HTML:                 
         xmp  
           textarea
             | 
-            | <div class='vs-slider' dots controls arrowdots size='large'> 
+            | <div class='vs-slider' dots controls> 
             |   <data image='https://picsum.photos/600/400?image=111'>
             |   <data image='https://picsum.photos/600/400?image=222'>
             |   <data image='https://picsum.photos/600/400?image=178'>
@@ -38,7 +38,10 @@
 
 <script>
 import {VJSlider} from '../assets/js/classes/slider'
-
+import img1 from "../assets/images/img1.jpg"
+import img2 from "../assets/images/img2.jpg"
+import img3 from "../assets/images/img3.jpg"
+import img4 from "../assets/images/img4.jpg"
 
 export default {
   name: 'home',
@@ -57,7 +60,8 @@ export default {
         {title: 'unflip'},
         {title: 'fold'},
         {title: 'unfold'}
-      ]
+      ],
+      img1, img2, img3, img4
     }
   },
   mounted: function () {
