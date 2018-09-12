@@ -376,7 +376,7 @@ export class VJSlider {
           
           setTimeout(() => {
             callback()
-          }, options.lazyload ? 250 : 0)
+          }, options.lazyload ? 100 : 0)
         })
        
     }
