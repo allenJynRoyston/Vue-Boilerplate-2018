@@ -13,6 +13,7 @@ export class VJSlider {
             easing: (!!this.ele.getAttribute('easing')) ? this.ele.getAttribute('easing') : 'easeInOutQuart',
             size: (!!this.ele.getAttribute('size')) ? this.ele.getAttribute('size') : 'default',
             lazyload: (!!this.ele.getAttribute('lazyload')) ? this.ele.getAttribute('lazyload')  === 'lazyload' || this.ele.getAttribute('lazyload')  === 'true' : false,
+            preload: (!!this.ele.getAttribute('preload')) ? this.ele.getAttribute('preload')  === 'preload' || this.ele.getAttribute('preload')  === 'true' : false,
             showText: (!!this.ele.getAttribute('text')) ? this.ele.getAttribute('text') === 'true' || this.ele.getAttribute('text')  === 'true' : true, 
             showControls: (!!this.ele.getAttribute('controls')) ? this.ele.getAttribute('controls')  === 'controls' || this.ele.getAttribute('controls')  === 'true' : false,
             showDots: (!!this.ele.getAttribute('dots')) ? this.ele.getAttribute('dots') === 'dots' || this.ele.getAttribute('dots')  === 'true' : false,
@@ -149,13 +150,13 @@ export class VJSlider {
         // build dots
         let dots = '';
         let _dotHTML = this.ele.querySelector('dots')        
-        if(this.options.arrowdots){
+        if(options.arrowdots){
           dots +=  `<button class='vj-slider--dots-item __arrowdots'>${this.HTMLSnippets.leftarrowdot}</button>`
         }
-        for(let i = 0; i < this.images.length; i++){                    
+        for(let i = 0; i < images.length; i++){                    
           dots +=  `<button class='vj-slider--dots-item __dot'>${this.HTMLSnippets.dots}</button>`          
         }
-        if(this.options.arrowdots){
+        if(options.arrowdots){
           dots +=  `<button class='vj-slider--dots-item __arrowdots'>${this.HTMLSnippets.rightarrowdot}</button>`
         }        
 
@@ -175,9 +176,9 @@ export class VJSlider {
         let _layout = document.createElement('div');
         _layout.innerHTML =`
         <!-- container -->
-        <div id='${this.randomId}' class='vj-slider--container'>
+        <div id='${this.randomId}' class='vj-slider--container' style='opacity: ${options.preload ? 0 : 1}'>
           <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}''  style='width: 100%; padding: ${options.padding}px; position: relative; overflow: hidden'>
-              
+                            
               <!-- UNDERLAY -->
               <div class='__underlay'></div>
 
@@ -292,7 +293,7 @@ export class VJSlider {
         })     
         
         // setup autoplay
-        if(this.options.autoplay.active){
+        if(options.autoplay.active){
           setTimeout(() => {
             this.lock(true);this.next()            
             this.options.autoplay.event = setInterval(() => {
@@ -301,13 +302,16 @@ export class VJSlider {
               }
             }, this.options.autoplay.interval)
           }, this.options.autoplay.delay)
-        }            
+        }   
+        if(options.preload){
+          this.preloadImages()
+        }
     }   
 
 
     
     setActiveCard(callback = () => {}){
-        let {images, cards, currentImage} = this;
+        let {cards, currentImage} = this;
         cards[this.determineType()].forEach((card, index) => {   
             if(index === 1){
                 this.setImageOnCard(index, currentImage, callback)             
@@ -328,12 +332,29 @@ export class VJSlider {
         return options.type === 'cascade' || options.type === 'waterfall' ? 'v' : 'h'
     }
 
-    preloadImage(image, callback = () => {}){   
+    preloadImages(callback){
+      let {images, randomId} = this
+      let count = 0
+      images.forEach((image) => {
+        this.preloadImage(image, () => {
+          fetch(image)
+            .then(data => {
+              count++
+              if(count === images.length){
+                let ele = document.querySelector(`#${randomId}`)
+                ele.style.opacity = 1
+              }              
+            }) 
+        })
+      })      
+    }
+
+    preloadImage(image, callback = () => {}, force = false){   
         let {options} = this;
         if(options.lazyload){
             fetch(image)
               .then(data => {
-                setTimeout(() => { callback()}, 25) 
+                setTimeout(() => { callback()}, 1) 
               }) 
         }
         else{

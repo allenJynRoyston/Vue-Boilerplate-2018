@@ -216,7 +216,7 @@
             |  
 
     div(style='margin: 50px')
-    h1 Lazyloading
+    h1 Lazyloading / Preloading
     hr
     div(style='margin: 50px')  
     .row
@@ -256,6 +256,25 @@
             |         
             |<data type='lazyloader' html='<i class="fa-3x fas fa-spinner fa-spin" style="color: white"></i>'></div>                  
             |
+
+      .col-xs-12.col-md-6
+        p Preload 
+        hr      
+        .vj-slider(controls preload)   
+          data(image='https://picsum.photos/200/300/?image=1082')
+          data(image='https://picsum.photos/200/300/?image=1081')
+          data(image='https://picsum.photos/200/300/?image=1080')
+          data(image='https://picsum.photos/200/300/?image=1079')      
+          data(image='https://picsum.photos/200/300/?image=1078')      
+          data(image='https://picsum.photos/200/300/?image=1077')      
+          data(image='https://picsum.photos/200/300/?image=1076')      
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider' controls preload> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |                
 </template>
 
 <script>

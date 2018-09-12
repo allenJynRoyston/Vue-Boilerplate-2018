@@ -8,7 +8,7 @@
         div(style='margin: 50px')     
         p default
         hr
-        .vj-slider(dots controls arrowdots size='')   
+        .vj-slider(dots controls arrowdots preload)   
           data(image='https://picsum.photos/600/400?image=111' )
           data(image='https://picsum.photos/600/400?image=222' )
           data(image='https://picsum.photos/600/400?image=178' )
