@@ -12,6 +12,7 @@ export class VJSlider {
             type:  (!!this.ele.getAttribute('type')) ? this.ele.getAttribute('type') : 'slide',
             easing: (!!this.ele.getAttribute('easing')) ? this.ele.getAttribute('easing') : 'easeInOutQuart',
             size: (!!this.ele.getAttribute('size')) ? this.ele.getAttribute('size') : 'default',
+            touch: (!!this.ele.getAttribute('touch')) ? this.ele.getAttribute('touch')  === 'touch' || this.ele.getAttribute('touch')  === 'true' : false,
             lazyload: (!!this.ele.getAttribute('lazyload')) ? this.ele.getAttribute('lazyload')  === 'lazyload' || this.ele.getAttribute('lazyload')  === 'true' : false,
             preload: (!!this.ele.getAttribute('preload')) ? this.ele.getAttribute('preload')  === 'preload' || this.ele.getAttribute('preload')  === 'true' : false,
             showText: (!!this.ele.getAttribute('text')) ? this.ele.getAttribute('text') === 'true' || this.ele.getAttribute('text')  === 'true' : true, 
@@ -184,63 +185,95 @@ export class VJSlider {
             preloadImages += `<img src='${image.src}' style='position: absolute; width: 0; height: 0; top: 0; left: 0; z-index: -1; pointer-events: none'/>`
           })
         }
-
         let _layout = document.createElement('div');
-        _layout.innerHTML =`
-        <!-- container -->
-        <div id='${this.randomId}' class='vj-slider--container' style='opacity: ${options.preload ? 0 : 1}'>
-          <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}''  style='width: 100%; padding: ${options.padding}px; position: relative; overflow: hidden'>
-                            
-              <!-- UNDERLAY -->
-              <div class='__underlay'></div>
 
-              <!-- vertical -->
-              <div style='position: absolute; top: 0; left: 0; width: 100%; height: 300%; transform: translateY(-33.33334%); display: ${this.determineType() === 'h' ? 'none' : 'block'}'>                
-                  ${verticalSlide}        
+        // TRANSITION SLIDES
+        if(!options.touch){
+          _layout.innerHTML =`
+          <!-- container -->
+          <div id='${this.randomId}' class='vj-slider--container' style='opacity: ${options.preload ? 0 : 1}'>
+            <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}''  style='width: 100%; padding: ${options.padding}px; position: relative; overflow: hidden'>
+                              
+                <!-- UNDERLAY -->
+                <div class='__underlay'></div>
+
+                <!-- vertical -->
+                <div style='position: absolute; top: 0; left: 0; width: 100%; height: 300%; transform: translateY(-33.33334%); display: ${this.determineType() === 'h' ? 'none' : 'block'}'>                
+                    ${verticalSlide}        
+                </div>
+
+                <!-- horizontal -->
+                <div style='position: absolute; top: 0; left: 0; width: 300%; height: 100%; transform: translateX(-33.33334%)' display: ${this.determineType() === 'h' ? 'block' : 'none'}'>                
+                    ${horizontalSlide}                                
+                </div>
+
+                <!-- OVERLAY -->
+                <div class='__overlay' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%'>
+
+                </div>
+
+                <!-- LOADING -->
+                <div class='__loading' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none'>
+                  ${this.HTMLSnippets.lazyloader}                
+                </div>              
+      
+                <!-- BUTTONS -->
+                <div class='vj-slider--button-left __button '>
+                    <button class='icon'>
+                    ${this.HTMLSnippets.leftbtn}
+                    </button>
+                </div>
+                <div class='vj-slider--button-right __button '>
+                    <button class='icon'>
+                        ${this.HTMLSnippets.rightbtn}
+                    </button>
+                </div>     
+
+                <!-- TEXTS -->
+                ${texts}
+  
+                <!-- IMAGE LOADER -->
+                <img alt='' class='__imagepreloader' style='position: absolute; opacity: 0; top: 0; left: 0; z-index: -1; pointer-events: none'/>
+
+                <!-- PRELOADED IMAGES -->
+                ${preloadImages}
+            </div>
+            <!-- DOTS -->
+            <div class='vj-slider--dots-container'>
+                ${dots}
+            </div>      
+          </div>      
+          `
+        }
+
+        // touch MODE
+        else{
+          let touchSlides = '';
+          for(var i = 0; i < images.length; i++){
+            touchSlides += `
+              <div style='width: calc(${100/images.length}% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
+                  <div style='width: 100%;height: 100%; display: flex; align-items: center; justify-content: center;color:'>
+                    <div style='background: url(${images[i].src}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%'></div>
+                  </div>
+              </div>
+              `
+          }
+
+          _layout.innerHTML =`
+          <!-- container -->
+          <div id='${this.randomId}' class='vj-slider--container' style='opacity: ${options.preload ? 0 : 1}'>
+            <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}'' style='width: 100%; padding: ${options.padding}px; position: relative; overflow-x: scroll'>
+              <div style='position: absolute; top: 0; left: 0; width: ${images.length*100}%; height: 100%; display: block;'> 
+                ${touchSlides}
               </div>
 
-              <!-- horizontal -->
-              <div style='position: absolute; top: 0; left: 0; width: 300%; height: 100%; transform: translateX(-33.33334%)' display: ${this.determineType() === 'h' ? 'block' : 'none'}'>                
-                  ${horizontalSlide}                                
-              </div>
-
-              <!-- OVERLAY -->
-              <div class='__overlay' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%'>
-
-              </div>
-
-              <!-- LOADING -->
-              <div class='__loading' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none'>
-                ${this.HTMLSnippets.lazyloader}                
-              </div>              
-    
-              <!-- BUTTONS -->
-              <div class='vj-slider--button-left __button '>
-                  <button class='icon'>
-                  ${this.HTMLSnippets.leftbtn}
-                  </button>
-              </div>
-              <div class='vj-slider--button-right __button '>
-                  <button class='icon'>
-                      ${this.HTMLSnippets.rightbtn}
-                  </button>
-              </div>     
 
               <!-- TEXTS -->
-              ${texts}
- 
-              <!-- IMAGE LOADER -->
-              <img alt='' class='__imagepreloader' style='position: absolute; opacity: 0; top: 0; left: 0; z-index: -1; pointer-events: none'/>
-
-              <!-- PRELOADED IMAGES -->
-              ${preloadImages}
+              ${texts}              
+            </div>
           </div>
-          <!-- DOTS -->
-          <div class='vj-slider--dots-container'>
-              ${dots}
-          </div>      
-        </div>      
-        `
+          `
+        }
 
         // remove old elements
         ele.parentNode.insertBefore( _layout, ele );
@@ -343,7 +376,7 @@ export class VJSlider {
           
           setTimeout(() => {
             callback()
-          }, options.lazyload ? 250 : 25)
+          }, options.lazyload ? 250 : 0)
         })
        
     }

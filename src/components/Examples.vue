@@ -1,5 +1,24 @@
 <template lang="pug">
   .container
+    h1 Touchscreen/Mobile devices
+    hr
+    div(style='margin: 50px')  
+    .row(style='margin-top: 100px')  
+      .col-xs-12.col-md-6
+        h2 Touchscreen/mobile setup                
+        div(style='margin: 10px')     
+        .vj-slider(touch size='small')   
+          data(image='https://picsum.photos/400/400/?image=1082')
+          data(image='https://picsum.photos/400/400/?image=1081')
+          data(image='https://picsum.photos/400/400/?image=1080')          
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider' touch> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |    
+
     h1 Transitions
     hr
     div(style='margin: 50px')  

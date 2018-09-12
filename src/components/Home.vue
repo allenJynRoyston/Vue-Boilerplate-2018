@@ -2,35 +2,25 @@
   .container
     .row  
       .col-xs-12.col-md-6.col-md-offset-3
-        h1 Basic Setup        
+        h2 Basic Setup        
         hr       
         h2 VJ-Slider is a lightweight, yet powerful, slider made with basic ass vanilla Javascript (hence the name - eh, clever) and powered by AnimeJS.  No jQuery dependency. Simple installation and highly customizable. 
-        div(style='margin: 50px')     
-        p default
-        hr
-        .vj-slider(dots controls preload)   
-          data(:image='img1')
-          data(:image='img2')
-          data(:image='img3')
-          data(:image='img4')
+        div(style='margin: 10px')     
+        .vj-slider(controls dots)   
+          data(image='https://picsum.photos/400/400/?image=1082')
+          data(image='https://picsum.photos/400/400/?image=1081')
+          data(image='https://picsum.photos/400/400/?image=1080')
+   
 
-        h2 In your HTML:                 
-        xmp  
-          textarea
-            | 
-            | <div class='vs-slider' dots controls> 
-            |   <data image='https://picsum.photos/600/400?image=111'>
-            |   <data image='https://picsum.photos/600/400?image=222'>
-            |   <data image='https://picsum.photos/600/400?image=178'>
-            |   <data image='https://picsum.photos/600/400?image=444'>
-            | </div>
-            | 
-
-        h2 Then excute in code:
-        xmp
-          textarea(oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"') 
-            | new VJSlider(document.querySelector('.vs-slider'))
-          
+    .row(style='margin-top: 100px')  
+      .col-xs-12.col-md-6.col-md-offset-3
+        h2 Touchscreen/mobile setup                
+        div(style='margin: 10px')     
+        .vj-slider(touch size='small')   
+          data(image='https://picsum.photos/400/400/?image=1082')
+          data(image='https://picsum.photos/400/400/?image=1081')
+          data(image='https://picsum.photos/400/400/?image=1080')          
+         
 
 
                 
