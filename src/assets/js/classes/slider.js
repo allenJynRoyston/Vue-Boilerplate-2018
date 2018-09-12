@@ -331,24 +331,10 @@ export class VJSlider {
     preloadImage(image, callback = () => {}){   
         let {options} = this;
         if(options.lazyload){
-            var img = document.querySelector('.__imagepreloader')
-            img.setAttribute('src', image)    
-            img.setAttribute('alt', image)          
-            const loadEL = () => {            
-                img.removeEventListener('load', loadEL)                     
-                setTimeout(() => {
-                    callback()
-                }, 1)   
-            }
-            const errorEL = () => {                             
-                img.removeEventListener('error', errorEL)                
-                setTimeout(() => {
-                    callback()
-                }, 1)           
-            } 
-        
-            img.addEventListener('load', loadEL)
-            img.addEventListener('error', errorEL)    
+            fetch(image)
+              .then(data => {
+                setTimeout(() => { callback()}, 25) 
+              }) 
         }
         else{
             setTimeout(() => {
