@@ -177,6 +177,14 @@ export class VJSlider {
           `    
         }
 
+        // preloaded images
+        let preloadImages = '';
+        if(options.preload){
+          this.images.forEach(image => {
+            preloadImages += `<img src='${image.src}' style='position: absolute; width: 0; height: 0; top: 0; left: 0; z-index: -1; pointer-events: none'/>`
+          })
+        }
+
         let _layout = document.createElement('div');
         _layout.innerHTML =`
         <!-- container -->
@@ -223,6 +231,9 @@ export class VJSlider {
  
               <!-- IMAGE LOADER -->
               <img alt='' class='__imagepreloader' style='position: absolute; opacity: 0; top: 0; left: 0; z-index: -1; pointer-events: none'/>
+
+              <!-- PRELOADED IMAGES -->
+              ${preloadImages}
           </div>
           <!-- DOTS -->
           <div class='vj-slider--dots-container'>
@@ -332,7 +343,7 @@ export class VJSlider {
           
           setTimeout(() => {
             callback()
-          }, options.lazyload ? 100 : 1)
+          }, options.lazyload ? 250 : 25)
         })
        
     }
@@ -345,9 +356,7 @@ export class VJSlider {
     preloadImages(callback){
       let {images, randomId} = this
       let count = 0
-      images.forEach((image) => {
-        let img = document.querySelector('.__imagepreloader')
-        img.setAttribute('src', image.src)             
+      images.forEach((image) => {         
         this.preloadImage(image.src, () => {
           fetch(image.src)
             .then(data => {
