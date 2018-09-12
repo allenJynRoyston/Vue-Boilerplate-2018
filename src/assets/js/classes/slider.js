@@ -25,7 +25,7 @@ export class VJSlider {
               interval: (!!this.ele.getAttribute('interval')) ? parseInt(this.ele.getAttribute('interval')) : 3000,
               event: null
             },   
-            lazyloadThreshold: 500,
+            lazyloadThreshold: 250,
             lazyloadEvent: null         
         }        
 
@@ -376,7 +376,7 @@ export class VJSlider {
           
           setTimeout(() => {
             callback()
-          }, options.lazyload ? 100 : 0)
+          })
         })
        
     }
@@ -409,12 +409,17 @@ export class VJSlider {
             let img = document.querySelector('.__imagepreloader')
             img.setAttribute('src', image)              
             fetch(image)
-              .then(data => {                
-                callback()
+              .then(data => {   
+                setTimeout(() => {        
+                  console.log('lazzzyloaded')     
+                  callback()
+                }, 1000)
               }) 
         }
         else{
-          callback()
+          setTimeout(() => {             
+            callback()
+          }, 150)
         }
     }
 
@@ -452,12 +457,7 @@ export class VJSlider {
 
         if(!!ele){
             // renders container (timer is to hide until ready)
-            let _style = `position: absolute; top: 0; left: 0; width: 100%; height: 100%;`
-            ele.setAttribute('style', `${_style}; opacity: 0`);
-            setTimeout(() => {
-                ele.setAttribute('style', `${_style}; opacity: 1`);
-            }, duration - 10)
-
+            ele.setAttribute('style', `position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1`);
             // renders background image
             ele.innerHTML = `
                 <div style='width: calc(100% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
@@ -467,14 +467,9 @@ export class VJSlider {
                 </div>                    
         ` 
         }  
-        if(options.lazyload){
-            this.preloadImage(image, () => {
-                callback()
-            })        
-        }
-        else{
+        this.preloadImage(image, () => {
             callback()
-        }
+        })        
     }
 
     hideUnderlay(){
