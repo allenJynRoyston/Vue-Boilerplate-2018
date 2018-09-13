@@ -6,7 +6,7 @@
         hr       
         h2 VJ-Slider is a lightweight, yet powerful, slider made with basic ass vanilla Javascript (hence the name - eh, clever) and powered by AnimeJS.  No jQuery dependency. Simple installation and highly customizable. 
         div(style='margin: 10px')     
-        .vj-slider(size='small' controls dots lazyload type='fade')   
+        .vj-slider(size='small' controls dots preload type='fade')   
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
