@@ -6,17 +6,17 @@
         hr       
         h2 VJ-Slider is a lightweight, yet powerful, slider made with basic ass vanilla Javascript (hence the name - eh, clever) and powered by AnimeJS.  No jQuery dependency. Simple installation and highly customizable. 
         div(style='margin: 10px')     
-        .vj-slider(controls dots size='small')   
-          data(image='https://picsum.photos/400/400/?image=1082')
-          data(image='https://picsum.photos/400/400/?image=1081')
-          data(image='https://picsum.photos/400/400/?image=1080')
+        //- .vj-slider(size='small' controls dots)   
+        //-   data(image='https://picsum.photos/400/400/?image=111')
+        //-   data(image='https://picsum.photos/400/400/?image=178')
+        //-   data(image='https://picsum.photos/400/400/?image=444')
    
 
     .row(style='margin-top: 50px')  
       .col-xs-12.col-md-6.col-md-offset-3
         h2 Touchscreen/mobile setup                
         div(style='margin: 10px')     
-        .vj-slider(touch size='small')   
+        .vj-slider(size='small' controls dots lazyload)   
           data(image='https://picsum.photos/400/400/?image=1082')
           data(image='https://picsum.photos/400/400/?image=1081')
           data(image='https://picsum.photos/400/400/?image=1080')          

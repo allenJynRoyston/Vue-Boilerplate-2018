@@ -25,6 +25,7 @@ export class VJSlider {
               interval: (!!this.ele.getAttribute('interval')) ? parseInt(this.ele.getAttribute('interval')) : 3000,
               event: null
             },   
+            preloadCount: 0,
             lazyloadThreshold: 250,
             lazyloadEvent: null         
         }        
@@ -181,8 +182,8 @@ export class VJSlider {
         // preloaded images
         let preloadImages = '';
         if(options.preload){
-          this.images.forEach(image => {
-            preloadImages += `<img src='${image.src}' style='position: absolute; width: 0; height: 0; top: 0; left: 0; z-index: -1; pointer-events: none'/>`
+          this.images.forEach((image, index) => {
+            preloadImages += `<img id='pl_${index}' src='${image.src}' style='position: absolute; z-index: -1; pointer-events: none' onload='${setTimeout(() => {this.preloadComplete(index)}, 1)}'/>`
           })
         }
         let _layout = document.createElement('div');
@@ -233,7 +234,8 @@ export class VJSlider {
                 ${texts}
   
                 <!-- IMAGE LOADER -->
-                <img alt='' class='__imagepreloader' style='position: absolute; opacity: 0; top: 0; left: 0; z-index: -1; pointer-events: none'/>
+                <img id='ll_master' style='position: absolute; z-index: -1; pointer-events: none' onload='${setTimeout(() => {this.lazyloadComplete()}, 1)}'/>
+                
 
                 <!-- PRELOADED IMAGES -->
                 ${preloadImages}
@@ -350,10 +352,7 @@ export class VJSlider {
               }
             }, this.options.autoplay.interval)
           }, this.options.autoplay.delay)
-        }   
-        if(options.preload){
-          this.preloadImages()
-        }
+        }           
     }   
 
 
@@ -369,14 +368,13 @@ export class VJSlider {
 
     setImageOnCard(cardIndex = 0, imageIndex = 0, callback = () => {}){
         let {cards, images, options} = this;
+        
+        cards[this.determineType()][cardIndex].innerHTML = `
+        <div id='ll_${cardIndex}${imageIndex}' style='background: url(${images[imageIndex].src}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%'></div>
+        `   
+            
         this.preloadImage(images[imageIndex].src, () => {
-          cards[this.determineType()][cardIndex].innerHTML = `
-              <div style='background: url(${images[imageIndex].src}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%'></div>
-          `   
-          
-          setTimeout(() => {
             callback()
-          })
         })
        
     }
@@ -386,41 +384,62 @@ export class VJSlider {
         return options.type === 'cascade' || options.type === 'waterfall' ? 'v' : 'h'
     }
 
-    preloadImages(callback){
-      let {images, randomId} = this
-      let count = 0
-      images.forEach((image) => {         
-        this.preloadImage(image.src, () => {
-          fetch(image.src)
-            .then(data => {
-              count++
-              if(count === images.length){
-                let ele = document.querySelector(`#${randomId}`)
-                ele.style.opacity = 1
-              }              
-            }) 
-        })
-      })      
+    preloadComplete(index){
+      let {randomId} = this;
+      let ele = document.querySelector(`#pl_${index}`)      
+      ele.timerEvent = setInterval(() => {
+        if(ele.height > 0){
+          clearInterval(ele.timerEvent)
+          this.preloadCompleteCheck()
+        }        
+      }, 10)       
     }
 
-    preloadImage(image, callback = () => {}, force = false){   
+    preloadCompleteCheck(){
+      let {randomId, images, options} = this;   
+      options.preloadCount++
+      if(options.preloadCount === images.length){
+        setTimeout(() => {
+          let ele = document.querySelector(`#${randomId}`)
+          ele.style.opacity = 1
+        })
+      }        
+    }
+
+    lazyloadComplete(){
+      //lazyloadComplete
+    }
+
+    preloadImage(image, callback = () => {}, force = false){           
         let {options} = this;
-        if(options.lazyload){
-            let img = document.querySelector('.__imagepreloader')
-            img.setAttribute('src', image)              
-            fetch(image)
-              .then(data => {   
-                setTimeout(() => {        
-                  console.log('lazzzyloaded')     
-                  callback()
-                }, 1000)
-              }) 
-        }
-        else{
-          setTimeout(() => {             
+        let ele = document.querySelector('#ll_master')       
+        ele.src = image
+        ele.timerEvent = setInterval(() => {
+          console.log('image loaded')
+          if(ele.height > 0){
+            ele.src = null;            
+            clearInterval(ele.timerEvent)
             callback()
-          }, 150)
-        }
+          }  
+        }, 10)
+    }
+
+    imageLoadedCheck(callback){
+      let {options} = this;
+      clearInterval(this.options.lazyloadEvent)
+      this.options.lazyloadEvent = setInterval(() => {
+        let pass = true
+        document.querySelectorAll(`.__preloadimgs`).forEach((img, index) => {                    
+          if(img.height === 0){
+            pass = false
+          }
+        }) 
+        if(pass){
+          clearInterval(this.options.lazyloadEvent)
+          callback()
+        }                       
+      }, 1)
+      
     }
 
     setImageLoading(state){
@@ -468,7 +487,7 @@ export class VJSlider {
         ` 
         }  
         this.preloadImage(image, () => {
-            callback()
+          callback()
         })        
     }
 
@@ -493,7 +512,7 @@ export class VJSlider {
         </div>                    
         `           
         this.preloadImage(image, () => {
-            callback()
+          callback()
         })
     }
 
