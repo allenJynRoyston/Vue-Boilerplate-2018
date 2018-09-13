@@ -1,24 +1,5 @@
 <template lang="pug">
   .container
-    h1 Touchscreen/Mobile devices
-    hr
-    div(style='margin: 50px')  
-    .row
-      .col-xs-12.col-md-6
-        h2 Touchscreen/mobile setup                
-        div(style='margin: 10px')     
-        .vj-slider(touch size='small')   
-          data(image='https://picsum.photos/400/400/?image=1082')
-          data(image='https://picsum.photos/400/400/?image=1081')
-          data(image='https://picsum.photos/400/400/?image=1080')          
-        xmp  
-          textarea 
-            |
-            |<div class='vj-slider' touch> 
-            |   <!-- INSERT IMAGES HERE -->
-            |</div>     
-            |    
-
     div(style='margin: 50px')
     h1 Transitions
     hr
@@ -236,6 +217,27 @@
             |  
 
     div(style='margin: 50px')
+    h1 Touchscreen/Mobile devices
+    hr
+    div(style='margin: 50px')  
+    .row
+      .col-xs-12.col-md-6
+        h2 Touchscreen/mobile setup                
+        div(style='margin: 10px')     
+        .vj-slider(touch size='small')   
+          data(image='https://picsum.photos/400/400/?image=1082')
+          data(image='https://picsum.photos/400/400/?image=1081')
+          data(image='https://picsum.photos/400/400/?image=1080')          
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider' touch> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |    
+
+
+    div(style='margin: 50px')
     h1 Lazyloading
     hr
     div(style='margin: 50px')  
@@ -243,7 +245,7 @@
       .col-xs-12.col-md-6
         p Default 
         hr      
-        .vj-slider(controls lazyload size='small')   
+        .vj-slider(controls lazyload size='small' threshold=100)   
           data(image='https://picsum.photos/1200/1400/?image=1082')
           data(image='https://picsum.photos/1200/1400/?image=1081')
           data(image='https://picsum.photos/1200/1400/?image=1080')
@@ -259,7 +261,7 @@
       .col-xs-12.col-md-6
         p Custom spinner 
         hr      
-        .vj-slider(controls lazyload size='small')   
+        .vj-slider(controls lazyload size='small' threshold=100)   
           data(image='https://picsum.photos/1200/1400/?image=444')
           data(image='https://picsum.photos/1200/1400/?image=1084')
           data(image='https://picsum.photos/1200/1400/?image=1075')

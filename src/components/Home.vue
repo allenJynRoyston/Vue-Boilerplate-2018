@@ -6,25 +6,23 @@
         hr       
         h2 VJ-Slider is a lightweight, yet powerful, slider made with basic ass vanilla Javascript (hence the name - eh, clever) and powered by AnimeJS.  No jQuery dependency. Simple installation and highly customizable. 
         div(style='margin: 10px')     
-        //- .vj-slider(size='small' controls dots)   
-        //-   data(image='https://picsum.photos/400/400/?image=111')
-        //-   data(image='https://picsum.photos/400/400/?image=178')
-        //-   data(image='https://picsum.photos/400/400/?image=444')
+        .vj-slider(size='small' controls dots lazyload type='fade')   
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')  
    
 
     .row(style='margin-top: 50px')  
       .col-xs-12.col-md-6.col-md-offset-3
         h2 Touchscreen/mobile setup                
         div(style='margin: 10px')     
-        .vj-slider(size='small' controls dots lazyload)   
+        .vj-slider(size='small' touch)   
           data(image='https://picsum.photos/400/400/?image=1082')
           data(image='https://picsum.photos/400/400/?image=1081')
-          data(image='https://picsum.photos/400/400/?image=1080')          
-    
-
-    .row
-      div(style='margin: 20px')     
-      .col-xs-12.col-md-6      
+          data(image='https://picsum.photos/400/400/?image=1080')   
+        br
+        br
         h2 Insert HTML on to page
         xmp  
           textarea 
@@ -33,8 +31,8 @@
             |   <!-- INSERT IMAGES HERE -->
             |</div>     
             |    
-      div(style='margin: 20px')     
-      .col-xs-12.col-md-6      
+        br
+        br      
         h2 Then execute in script
         xmp  
           textarea 

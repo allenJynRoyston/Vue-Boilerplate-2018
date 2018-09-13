@@ -13,7 +13,7 @@ export class VJSlider {
             easing: (!!this.ele.getAttribute('easing')) ? this.ele.getAttribute('easing') : 'easeInOutQuart',
             size: (!!this.ele.getAttribute('size')) ? this.ele.getAttribute('size') : 'default',
             touch: (!!this.ele.getAttribute('touch')) ? this.ele.getAttribute('touch')  === 'touch' || this.ele.getAttribute('touch')  === 'true' : false,
-            lazyload: (!!this.ele.getAttribute('lazyload')) ? this.ele.getAttribute('lazyload')  === 'lazyload' || this.ele.getAttribute('lazyload')  === 'true' : false,
+            lazyload: (!!this.ele.getAttribute('lazyload')) ? this.ele.getAttribute('lazyload')  === 'lazyload' || this.ele.getAttribute('lazyload')  === 'true' : true,
             preload: (!!this.ele.getAttribute('preload')) ? this.ele.getAttribute('preload')  === 'preload' || this.ele.getAttribute('preload')  === 'true' : false,
             showText: (!!this.ele.getAttribute('text')) ? this.ele.getAttribute('text') === 'true' || this.ele.getAttribute('text')  === 'true' : true, 
             showControls: (!!this.ele.getAttribute('controls')) ? this.ele.getAttribute('controls')  === 'controls' || this.ele.getAttribute('controls')  === 'true' : false,
@@ -26,11 +26,10 @@ export class VJSlider {
               event: null
             },   
             preloadCount: 0,
-            lazyloadThreshold: 250,
+            lazyloadCount: 0,
+            lazyloadThreshold: (!!this.ele.getAttribute('threshold')) ? parseInt(this.ele.getAttribute('threshold')) : 700,
             lazyloadEvent: null         
         }        
-
-        
 
         this.HTMLSnippets = {
           dots: '&squf;',
@@ -234,8 +233,9 @@ export class VJSlider {
                 ${texts}
   
                 <!-- IMAGE LOADER -->
-                <img id='ll_master' style='position: absolute; z-index: -1; pointer-events: none' onload='${setTimeout(() => {this.lazyloadComplete()}, 1)}'/>
-                
+                <div id='__ll_master' style='position: absolute; z-index: -1; pointer-events: none'>
+                    
+                </div>
 
                 <!-- PRELOADED IMAGES -->
                 ${preloadImages}
@@ -360,20 +360,18 @@ export class VJSlider {
     setActiveCard(callback = () => {}){
         let {cards, currentImage} = this;
         cards[this.determineType()].forEach((card, index) => {   
-            if(index === 1){
+            if(index === 1){                
                 this.setImageOnCard(index, currentImage, callback)             
             }                      
-        })    
+        })          
     }
 
     setImageOnCard(cardIndex = 0, imageIndex = 0, callback = () => {}){
         let {cards, images, options} = this;
-        
         cards[this.determineType()][cardIndex].innerHTML = `
         <div id='ll_${cardIndex}${imageIndex}' style='background: url(${images[imageIndex].src}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%'></div>
-        `   
-            
-        this.preloadImage(images[imageIndex].src, () => {
+        `     
+        this.preloadImage(images[imageIndex].src, () => {          
             callback()
         })
        
@@ -386,9 +384,9 @@ export class VJSlider {
 
     preloadComplete(index){
       let {randomId} = this;
-      let ele = document.querySelector(`#pl_${index}`)      
+      let ele = document.querySelector(`#${randomId} #pl_${index}`)      
       ele.timerEvent = setInterval(() => {
-        if(ele.height > 0){
+        if(ele.height > 0){        
           clearInterval(ele.timerEvent)
           this.preloadCompleteCheck()
         }        
@@ -406,30 +404,42 @@ export class VJSlider {
       }        
     }
 
-    lazyloadComplete(){
-      //lazyloadComplete
-    }
+
 
     preloadImage(image, callback = () => {}, force = false){           
-        let {options} = this;
-        let ele = document.querySelector('#ll_master')       
-        ele.src = image
-        ele.timerEvent = setInterval(() => {
-          console.log('image loaded')
-          if(ele.height > 0){
-            ele.src = null;            
-            clearInterval(ele.timerEvent)
+        let {randomId, options} = this;
+
+        if(options.lazyload){
+             options.lazyloadCount ++
+        
+            let ele = document.querySelector(`#${randomId} #__ll_master`)     
+            
+            ele.innerHTML = `
+                <img id='llc_${options.lazyloadCount}'/>
+            `
+            
+            setTimeout(() => {
+                let _ele = document.querySelector(`#${randomId} #llc_${options.lazyloadCount}`)   
+                _ele.src = image
+                _ele.timerEvent = setInterval(() => {                    
+                    if(_ele.height > 0){                        
+                        clearInterval(_ele.timerEvent)
+                        setTimeout(() => { callback() }, 1)               
+                    }  
+                })
+            })
+        }
+        else{
             callback()
-          }  
-        }, 10)
+        }
     }
 
     imageLoadedCheck(callback){
-      let {options} = this;
+      let {randomId, options} = this;
       clearInterval(this.options.lazyloadEvent)
       this.options.lazyloadEvent = setInterval(() => {
         let pass = true
-        document.querySelectorAll(`.__preloadimgs`).forEach((img, index) => {                    
+        document.querySelectorAll(`#${randomId} .__preloadimgs`).forEach((img, index) => {                    
           if(img.height === 0){
             pass = false
           }
@@ -473,21 +483,20 @@ export class VJSlider {
     setUnderlay(image, duration, callback = () => {}){
         let {randomId, options} = this
         let ele = document.querySelector(`#${randomId} .__underlay`);  
-
-        if(!!ele){
-            // renders container (timer is to hide until ready)
-            ele.setAttribute('style', `position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1`);
-            // renders background image
-            ele.innerHTML = `
-                <div style='width: calc(100% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
-                    <div style='width: 100%;height: 100%; display: flex;align-items: center; justify-content: center;color: white;'>
-                        <div style='background: url(${image}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%; opacity: 1'></div>
-                    </div>
-                </div>                    
-        ` 
-        }  
-        this.preloadImage(image, () => {
-          callback()
+        this.preloadImage(image, () => {              
+            if(!!ele){
+                // renders container (timer is to hide until ready)
+                ele.setAttribute('style', `position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 1`);
+                // renders background image
+                ele.innerHTML = `
+                    <div style='width: calc(100% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
+                        <div style='width: 100%;height: 100%; display: flex;align-items: center; justify-content: center;color: white;'>
+                            <div style='background: url(${image}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%; opacity: 1'></div>
+                        </div>
+                    </div>                    
+                ` 
+            }              
+            callback()
         })        
     }
 
@@ -504,16 +513,21 @@ export class VJSlider {
     setOverlay(image, callback = () => {}){
         let {options, randomId} = this;
         let ele = document.querySelector(`#${randomId} .__overlay`);  
-        ele.innerHTML = `
-        <div style='width: calc(100% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
-            <div style='width: 100%;height: 100%; display: flex;align-items: center; justify-content: center;color: white;'>
-                <div style='background: url(${image}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%; opacity: 1;'></div>
-            </div>
-        </div>                    
-        `           
-        this.preloadImage(image, () => {
-          callback()
-        })
+        //this.preloadImage(image, () => {
+            if(!!ele){
+                ele.innerHTML = `
+                    <div style='width: calc(100% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
+                        <div style='width: 100%;height: 100%; display: flex;align-items: center; justify-content: center;color: white;'>
+                            <div style='background: url(${image}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%; opacity: 1;'></div>
+                        </div>
+                    </div>                    
+                `      
+            }    
+
+        //})
+        setTimeout(() => {                
+            callback()
+        }, 100)
     }
 
     hideOverlay(){
@@ -559,9 +573,7 @@ export class VJSlider {
         this.currentImage = this.getNext(1)        
         this.setImageLoading(true)
         this.setImageOnCard(0, this.currentImage, () => {            
-            this.animate(false, () => {
-            
-            })            
+           this.animate(false, () => {})            
         })        
     }
 
@@ -609,7 +621,7 @@ export class VJSlider {
         this.lock(false)
           this.setActiveCard(() => {
             this.resetPosition(false)
-            this.hideUnderlay()            
+            //this.hideUnderlay()            
             callback()                
           })
         }
@@ -663,23 +675,22 @@ export class VJSlider {
                         })                                                
                     })
                 break                
-                case 'fade':     
-                    _overlay.style.opacity = 1                                           
-                    this.setOverlay(images[previousImage].src, () => {    
+                case 'fade':           
+                    _overlay.style.opacity = 1
+                    this.setOverlay(images[previousImage].src, () => {                                      
                         this.setActiveCard(() => {  
-                          this.setImageLoading(false)          
-                          anime.timeline()                  
-                              .add({
-                                  targets: document.querySelector(`#${this.randomId} .__overlay`),
-                                  duration: duration, 
-                                  easing: 'linear',
-                                  opacity: 0,
-                                  complete: () => {
-                                      this.lock(false)
-                                      end()
-                                  }
-                              })
-                      })
+                            this.lock(false)
+                            anime({
+                                targets: document.querySelector(`#${this.randomId} .__overlay`),
+                                duration: duration, 
+                                easing: 'linear',
+                                opacity: 0,
+                                complete: () => {
+                                    this.setImageLoading(false)                                          
+                                    end()
+                                }
+                            })
+                        })
                     })                                
                 break  
                 case 'grow':    
