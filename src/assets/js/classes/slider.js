@@ -1,12 +1,15 @@
 import anime from "animejs";
 
 export class VJSlider {
-    constructor(ele) {       
+    constructor(ele, anime) {       
         this.ele = ele;     
+        
         this.previousImage = 0   
         this.currentImage = 0        
+        this.randomId = null
         this.options = {
             padding: (!!this.ele.getAttribute('padding')) ? parseInt(this.ele.getAttribute('padding')) : 0,
+            cardbg: (!!this.ele.getAttribute('cardbg')) ? this.ele.getAttribute('cardbg') : 'black',
             speed: (!!this.ele.getAttribute('speed')) ? parseInt(this.ele.getAttribute('speed')) : 400,
             height: (!!this.ele.getAttribute('height')) ? parseInt(this.ele.getAttribute('height')) : 400,            
             type:  (!!this.ele.getAttribute('type')) ? this.ele.getAttribute('type') : 'slide',
@@ -15,9 +18,9 @@ export class VJSlider {
             touch: (!!this.ele.getAttribute('touch')) ? this.ele.getAttribute('touch')  === 'touch' || this.ele.getAttribute('touch')  === 'true' : false,
             lazyload: (!!this.ele.getAttribute('lazyload')) ? this.ele.getAttribute('lazyload')  === 'lazyload' || this.ele.getAttribute('lazyload')  === 'true' : true,
             preload: (!!this.ele.getAttribute('preload')) ? this.ele.getAttribute('preload')  === 'preload' || this.ele.getAttribute('preload')  === 'true' : false,
-            showText: (!!this.ele.getAttribute('text')) ? this.ele.getAttribute('text') === 'true' || this.ele.getAttribute('text')  === 'true' : true, 
-            showControls: (!!this.ele.getAttribute('controls')) ? this.ele.getAttribute('controls')  === 'controls' || this.ele.getAttribute('controls')  === 'true' : false,
-            showDots: (!!this.ele.getAttribute('dots')) ? this.ele.getAttribute('dots') === 'dots' || this.ele.getAttribute('dots')  === 'true' : false,
+            text: (!!this.ele.getAttribute('text')) ? this.ele.getAttribute('text') === 'true' || this.ele.getAttribute('text')  === 'true' : true, 
+            controls: (!!this.ele.getAttribute('controls')) ? this.ele.getAttribute('controls')  === 'controls' || this.ele.getAttribute('controls')  === 'true' : false,
+            dots: (!!this.ele.getAttribute('dots')) ? this.ele.getAttribute('dots') === 'dots' || this.ele.getAttribute('dots')  === 'true' : false,
             arrowdots: (!!this.ele.getAttribute('arrowdots')) ? this.ele.getAttribute('arrowdots') === 'arrowdots' || this.ele.getAttribute('arrowdots')  === 'true': null, 
             autoplay:{
               active: (!!this.ele.getAttribute('autoplay')) ? this.ele.getAttribute('autoplay')  === 'autoplay' || this.ele.getAttribute('autoplay')  === 'true': false,
@@ -28,8 +31,13 @@ export class VJSlider {
             preloadCount: 0,
             lazyloadCount: 0,
             lazyloadThreshold: (!!this.ele.getAttribute('threshold')) ? parseInt(this.ele.getAttribute('threshold')) : 700,
-            lazyloadEvent: null         
-        }        
+            lazyloadEvent: null, 
+            mockdelay:  (!!this.ele.getAttribute('mockdelay')) ? parseInt(this.ele.getAttribute('mockdelay')) : 0,
+        }     
+        
+
+        this.animejsInstalled = !!anime ? true : false
+        this.options.type = !this.animejsInstalled ? 'slide' : this.options.type 
 
         this.HTMLSnippets = {
           dots: '&squf;',
@@ -105,6 +113,80 @@ export class VJSlider {
         this.init()
     }
 
+    build(parameters, resetIndex = true){      
+        let {randomId, options}   = this;
+
+        if(!!parameters.images){
+            this.images = []
+            parameters.images.forEach(image => {
+                this.images.push({src: image.src, header: '', footer: '', easing: ''})
+            })
+        }     
+
+        if(!!parameters.options){
+            options.padding = !!parameters.options.padding ? parameters.options.padding : options.padding; 
+            options.cardbg = !!parameters.options.cardbg ? parameters.options.cardbg : options.cardbg; 
+            options.speed = !!parameters.options.speed ? parameters.options.speed : options.speed; 
+            options.height = !!parameters.options.height ? parameters.options.height : options.paddheighting; 
+            options.type = !!parameters.options.type ? parameters.options.type : options.type; 
+            options.easing = !!parameters.options.easing ? parameters.options.easing : options.easing; 
+            options.size = !!parameters.options.size ? parameters.options.size : options.size; 
+            options.touch = !!parameters.options.touch ? parameters.options.touch : options.touch; 
+            options.lazyload = !!parameters.options.lazyload ? parameters.options.lazyload : options.lazyload; 
+            options.text = !!parameters.options.text ? parameters.options.text : options.text; 
+            options.controls = !!parameters.options.controls ? parameters.options.controls : options.controls; 
+            options.dots = !!parameters.options.dots ? parameters.options.dots : options.dots; 
+            options.lazyloadThreshold = !!parameters.options.lazyloadThreshold ? parameters.options.lazyloadThreshold : options.lazyloadThreshold; 
+            
+            // autoplay settings
+            if(!!parameters.options.autoplay){                
+                options.autoplay.active = !!parameters.options.autoplay.active ? parameters.options.autoplay.active : options.autoplay.active; 
+                options.autoplay.delay = !!parameters.options.autoplay.delay ? parameters.options.autoplay.delay : options.autoplay.delay; 
+                options.autoplay.interval = !!parameters.options.autoplay.interval ? parameters.options.autoplay.interval : options.autoplay.interval; 
+            }
+        }
+
+        // reset counters/preloaders
+        this.currentImage = resetIndex ? 0 : this.currentImage
+        options.preloadCount = 0;
+     
+        // clear all intervals
+        document.querySelectorAll(`#${randomId} .__si`).forEach(ele => {
+            clearInterval(ele.timerEvent)            
+        })      
+
+        this.ele = document.querySelector(`#${randomId}`)
+        this.ele.innerHTML = '';
+        
+        this.init()
+        
+    }
+
+    returnElement(){
+        let {randomId} = this
+        return document.querySelector(`#${randomId}`)
+    }
+
+    currentProperties(){
+        return this.options 
+    }
+
+    slideData(){        
+        return {index: this.currentImage, current:this.images[this.currentImage], images: this.images}
+    }
+
+    update(parameters){
+        this.build(parameters, false)
+        return this.options
+    }
+
+    destroy(callback = () => {}){
+        let {randomId} = this
+        this.ele = document.querySelector(`#${randomId}`)
+        this.ele.parentNode.remove()  
+        callback()
+    }
+
 
     getNext(amount = 1, sp = this.currentImage){
         let {images, currentImage} = this    
@@ -126,30 +208,20 @@ export class VJSlider {
 
 
     buildLayout(){
-        let {ele, buttons, inputElements, cards, images, options} = this;
-        this.randomId = `__slider_${Math.random().toString(36).substring(7)}`;
+        let {randomId, ele, buttons, inputElements, cards, images, options} = this;
+        this.randomId = randomId === null ? `__slider_${Math.random().toString(36).substring(7)}` : randomId
 
         // build horzintal layout
         let horizontalSlide = '';
         for(var i = 0; i < 3; i++){
-            horizontalSlide += `
-            <div class='__hs' style='width: calc(33.333334% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left;padding: ${options.padding}px;'>
-                <div style='width: 100%;height: 100%; display: flex; align-items: center; justify-content: center;color: white;'>
-                    
-                </div>
-            </div>
-            `
+            horizontalSlide += `<div class='__hs' style='width: calc(33.333334% - ${options.padding*2}px); height: calc(100% - ${options.padding*2}px); float: left; padding: ${options.padding}px; background-color: ${options.cardbg}'></div>`
         }
+
         
         // build vertical layout
         let verticalSlide = '';
         for(var i = 0; i < 3; i++){
-            verticalSlide += `
-        <div class='__vs' style='width: calc(100% - ${options.padding*2}px); height: calc(33.333334% - ${options.padding*2}px);padding: ${options.padding}px'>
-            <div style='width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;color: white'>
-            </div>
-        </div>
-        `     
+            verticalSlide += `<div class='__vs' style='width: calc(100%); height: calc(33.333334%);'></div>`     
         }   
 
         // build dots
@@ -167,7 +239,7 @@ export class VJSlider {
 
         // build text
         let texts = '<div style="display: none"><p class="__texts"></p><p class="__texts"></p></div>';  // renders but doesn't show
-        if(options.showText){ 
+        if(options.text){ 
           texts = `          
           <div class='vj-slider--text-header-banner'>
             <p class='vj-slider--text-header __texts'></p>
@@ -182,7 +254,7 @@ export class VJSlider {
         let preloadImages = '';
         if(options.preload){
           this.images.forEach((image, index) => {
-            preloadImages += `<img id='pl_${index}' src='${image.src}' style='position: absolute; z-index: -1; pointer-events: none' onload='${setTimeout(() => {this.preloadComplete(index)}, 1)}'/>`
+            preloadImages += `<img id='pl_${index}' class='__si' src='${image.src}' style='position: absolute; z-index: -1; pointer-events: none' onload='${setTimeout(() => {this.preloadComplete(index)}, 1)}'/>`
           })
         }
         let _layout = document.createElement('div');
@@ -192,7 +264,7 @@ export class VJSlider {
           _layout.innerHTML =`
           <!-- container -->
           <div id='${this.randomId}' class='vj-slider--container' style='opacity: ${options.preload ? 0 : 1}'>
-            <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}''  style='width: 100%; padding: ${options.padding}px; position: relative; overflow: hidden'>
+            <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}''  style='width: calc(100% - ${options.padding*2}px); padding: ${options.padding}px; position: relative; overflow: hidden;'>
                               
                 <!-- UNDERLAY -->
                 <div class='__underlay'></div>
@@ -220,10 +292,10 @@ export class VJSlider {
                 <!-- BUTTONS -->
                 <div class='vj-slider--button-left __button '>
                     <button class='icon'>
-                    ${this.HTMLSnippets.leftbtn}
+                        ${this.HTMLSnippets.leftbtn}
                     </button>
                 </div>
-                <div class='vj-slider--button-right __button '>
+                <div class='vj-slider--button-right __button'>
                     <button class='icon'>
                         ${this.HTMLSnippets.rightbtn}
                     </button>
@@ -283,6 +355,7 @@ export class VJSlider {
 
         // get elements
         cards.ele =  document.querySelector(`#${this.randomId}`);
+        cards.h = []; cards.v = [];
         document.querySelectorAll(`#${this.randomId} .__hs`).forEach(ele => {
             cards.h.push(ele)
         })
@@ -293,12 +366,18 @@ export class VJSlider {
         document.querySelectorAll(`#${this.randomId} .__texts`).forEach((ele, index) => {   
           ele.updateText = (str) => {            
             ele.innerHTML = (str === null || str === undefined || str === '') ? '&nbsp;' : str
-            anime({
-              targets: ele.parentElement,
-              duration: 300,
-              easing: 'easeInSine',
-              opacity: (str === null || str === undefined || str === '') ? 0 : 1             
-            });   
+
+            if(this.animejsInstalled){
+                anime({
+                targets: ele.parentElement,
+                duration: 300,
+                easing: 'easeInSine',
+                opacity: (str === null || str === undefined || str === '') ? 0 : 1             
+                });   
+            }
+            else{
+                ele.parentElement.style.opacity = (str === null || str === undefined || str === '') ? 0 : 1       
+            }
 
           }       
           this.texts[index === 0 ? 'header' : 'footer'] = ele
@@ -312,7 +391,7 @@ export class VJSlider {
             ele.addEventListener('click', () => {
               clearInterval(this.options.autoplay.event)              
               if(!buttons.locked){
-                  this.lock(true)
+                  this.lock(true)                  
                   index === 1 || index === 3 ? this.next() : this.prev()
               }
             })
@@ -321,22 +400,25 @@ export class VJSlider {
         // get button and attach actions
         document.querySelectorAll(`#${this.randomId} .__dot`).forEach((ele, index) => {
             inputElements.push(ele)
-            ele.addEventListener('click', () => {
+            ele.addEventListener('click', () => {                
               clearInterval(this.options.autoplay.event)
               if(!buttons.locked){     
                   if(index > this.currentImage){      
-                  this.lock(true)
-                  this.previousImage = this.currentImage
-                  this.currentImage = index;                                                    
-                  this.setImageOnCard(0, index )
-                  this.animate(false, () => {})                    
+                    this.lock(true)
+                    this.previousImage = this.currentImage
+                    this.currentImage = index       
+                    this.setImageLoading(true)
+                    this.setImageOnCard(0, index, () => {            
+                       this.animate(false, () => {})            
+                    })                                      
                   }
                   if(index < this.currentImage){   
-                  this.lock(true)
-                  this.previousImage = this.currentImage
-                  this.currentImage = index;                          
-                  this.setImageOnCard(2, index )
-                  this.animate(true, () => {})          
+                    this.lock(true)
+                    this.previousImage = this.currentImage
+                    this.currentImage = index;                          
+                    this.setImageOnCard(2, index, () => {         
+                        this.animate(true, () => {})          
+                    })
                   }
               }
             })
@@ -359,8 +441,9 @@ export class VJSlider {
     
     setActiveCard(callback = () => {}){
         let {cards, currentImage} = this;
+        
         cards[this.determineType()].forEach((card, index) => {   
-            if(index === 1){                
+            if(index === 1){      
                 this.setImageOnCard(index, currentImage, callback)             
             }                      
         })          
@@ -368,12 +451,18 @@ export class VJSlider {
 
     setImageOnCard(cardIndex = 0, imageIndex = 0, callback = () => {}){
         let {cards, images, options} = this;
-        cards[this.determineType()][cardIndex].innerHTML = `
-        <div id='ll_${cardIndex}${imageIndex}' style='background: url(${images[imageIndex].src}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%'></div>
-        `     
-        this.preloadImage(images[imageIndex].src, () => {          
-            callback()
-        })
+        setTimeout(() => {
+            cards[this.determineType()][cardIndex].innerHTML = `
+                <div id='ll_${cardIndex}${imageIndex}' style='width: calc(100%); height: calc(100%); overflow: hidden'>
+                    <div style='background: url(${images[imageIndex].src}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: 100%; height: 100%'></div>
+                </div>
+            `  
+
+        
+            this.preloadImage(images[imageIndex].src, () => {          
+                callback()
+            })
+        }, options.mockdelay)
        
     }
 
@@ -384,13 +473,18 @@ export class VJSlider {
 
     preloadComplete(index){
       let {randomId} = this;
-      let ele = document.querySelector(`#${randomId} #pl_${index}`)      
-      ele.timerEvent = setInterval(() => {
-        if(ele.height > 0){        
-          clearInterval(ele.timerEvent)
-          this.preloadCompleteCheck()
-        }        
-      }, 10)       
+      let ele = document.querySelector(`#${randomId} #pl_${index}`)     
+      if(!!ele){
+        ele.timerEvent = setInterval(() => {    
+            if(ele.height > 0){        
+                clearInterval(ele.timerEvent)
+                this.preloadCompleteCheck()
+            }                
+        }, 10)       
+      }
+      else{
+        clearInterval(ele.timerEvent)
+      }
     }
 
     preloadCompleteCheck(){
@@ -413,21 +507,26 @@ export class VJSlider {
              options.lazyloadCount ++
         
             let ele = document.querySelector(`#${randomId} #__ll_master`)     
-            
-            ele.innerHTML = `
-                <img id='llc_${options.lazyloadCount}'/>
-            `
-            
-            setTimeout(() => {
-                let _ele = document.querySelector(`#${randomId} #llc_${options.lazyloadCount}`)   
-                _ele.src = image
-                _ele.timerEvent = setInterval(() => {                    
-                    if(_ele.height > 0){                        
-                        clearInterval(_ele.timerEvent)
-                        setTimeout(() => { callback() }, 1)               
-                    }  
+            if(!!ele){
+                ele.innerHTML = `
+                    <img id='llc_${options.lazyloadCount}' class='__si' />
+                `
+                setTimeout(() => {
+                    let _ele = document.querySelector(`#${randomId} #llc_${options.lazyloadCount}`)   
+                    if(!!_ele){
+                        _ele.src = image
+                        _ele.timerEvent = setInterval(() => {                                                
+                            if(_ele.height > 0){                        
+                                clearInterval(_ele.timerEvent)
+                                setTimeout(() => { callback() }, 1)               
+                            }                              
+                        })
+                    }
                 })
-            })
+            }
+            else{
+                callback()
+            }
         }
         else{
             callback()
@@ -456,15 +555,17 @@ export class VJSlider {
         let {randomId, options} = this
         const renders = () => {
           let ele = document.querySelector(`#${randomId} .__loading`);  
-          ele.style.backgroundColor = `rgba(0, 0, 0, ${state ? 0.5  : 0})` 
-          ele.style.opacity =  state ? 1 : 0          
+          if(!!ele){
+            ele.style.backgroundColor = `rgba(0, 0, 0, ${state ? 0.5  : 0})` 
+            ele.style.opacity =  state ? 1 : 0          
+          }
         }
 
         if(options.lazyload){
           if(state){
             options.lazyloadEvent = setTimeout(() => {
               renders()
-            }, options.lazyloadThreshold)                  
+            }, options.lazyloadThreshold+options.speed)                  
           }
           else{
             renders()
@@ -542,20 +643,29 @@ export class VJSlider {
     animateText(reversed){
       let {options} = this
       this.texts.ele.forEach((ele, index) => {
-        anime.timeline()
-          .add({        
-            targets: ele,
-            duration: options.speed/2,
-            easing: 'easeInSine',
-            translateX: reversed ? 0 : index === 0 ? 5 : -5,
-            opacity: reversed ? 1 : 0,
-            delay: index*options.speed/4, 
-            complete: () => {
-              if(!reversed){
+        if(this.animejsInstalled){
+            anime.timeline()
+            .add({        
+                targets: ele,
+                duration: options.speed/2,
+                easing: 'easeInSine',
+                translateX: reversed ? 0 : index === 0 ? 5 : -5,
+                opacity: reversed ? 1 : 0,
+                delay: index*options.speed/4, 
+                complete: () => {
+                if(!reversed){
+                    this.loadText()
+                }
+                }
+            });
+        }
+        else{
+            ele.style.transform = `translateX(${reversed ? 0 : index === 0 ? 5 : -5})`
+            ele.style.opacity =  reversed ? 1 : 0
+            if(!reversed){
                 this.loadText()
-              }
-            }
-          });
+            }            
+        }
       })      
     }
 
@@ -593,10 +703,10 @@ export class VJSlider {
         let {options, buttons, inputElements} = this
         inputElements.forEach(ele => {
             if(ele.classList.contains('__button')){
-              ele.setAttribute('style', `display: ${options.showControls ? 'visible' : 'none'}; opacity: ${state ? 0.65 : 1} `)
+              ele.setAttribute('style', `display: ${options.controls ? 'visible' : 'none'}; opacity: ${state ? 0.65 : 1} `)
             }
             if(ele.classList.contains('__dot')){
-              ele.setAttribute('style', `display: ${options.showDots ? 'visible' : 'none'};`)
+              ele.setAttribute('style', `display: ${options.dots ? 'visible' : 'none'};`)
             }            
         })
         buttons.locked = state
@@ -637,19 +747,28 @@ export class VJSlider {
                 case 'slide':
                     this.setUnderlay(images[currentImage].src, duration, () => {
                         cards[this.determineType()].forEach((card, index) => {  
-                            this.setImageLoading(false)                        
-                            anime({
-                                targets: card,
-                                duration, 
-                                easing: options.easing,
-                                translateX: reversed ? `-100%` : `100%`,
-                                complete: () => {
-                                    if(index === 1){
-                                        completed();
-                                        end()
+                            this.setImageLoading(false)    
+                            if(this.animejsInstalled){                    
+                                anime({
+                                    targets: card,
+                                    duration, 
+                                    easing: options.easing,
+                                    translateX: reversed ? `-100%` : `100%`,
+                                    complete: () => {
+                                        if(index === 1){
+                                            completed();
+                                            end()
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
+                            else{
+                                card.style.transform = `translateX(${ reversed ? `-100%` : `100%`})`
+                                if(index === 1){
+                                    completed();
+                                    end()
+                                }                                
+                            }
                         })
                     })
                 break
@@ -678,14 +797,14 @@ export class VJSlider {
                 case 'fade':           
                     _overlay.style.opacity = 1
                     this.setOverlay(images[previousImage].src, () => {                                      
-                        this.setActiveCard(() => {  
-                            this.lock(false)
+                        this.setActiveCard(() => {                             
                             anime({
                                 targets: document.querySelector(`#${this.randomId} .__overlay`),
                                 duration: duration, 
-                                easing: 'linear',
+                                easing: options.easing,
                                 opacity: 0,
                                 complete: () => {
+                                    this.lock(false)
                                     this.setImageLoading(false)                                          
                                     end()
                                 }

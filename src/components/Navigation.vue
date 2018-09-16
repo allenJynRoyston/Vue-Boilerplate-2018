@@ -3,7 +3,9 @@
     a
       router-link(to="/") Setup
     a
-      router-link(to="/examples") Examples      
+      router-link(to="/examples") Examples    
+    a
+      router-link(to="/advanced") Advanced            
     a
       router-link(to="/install") Install
     a(href='https://github.com/allenRoyston/VJ-Slider' target="_blank") 
@@ -45,11 +47,15 @@ export default {
     display: flex
     align-items: center
     justify-content: center
+    background-color: rgba(0, 0, 0, 1)
+    width: 100%
+    z-index: 100
+
 
     a
       text-decoration: none
       margin-left: 5px
-      margin-right: 5%
+      margin-right: 2%
       color: white
       font-size: 2rem
 

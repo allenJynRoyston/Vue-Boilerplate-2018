@@ -1,32 +1,46 @@
 <template lang="pug">
-  .container
-    div(style='margin: 50px')
-    h1 Transitions
-    hr
-    div(style='margin: 50px')  
-    .row
-      .col-xs-12.col-md-4(v-for='type in types')   
-        p {{type.title}}
-        hr
-        .vj-slider(dots controls v-bind:type='type.title' preload size='small')    
-          data(:image='img1')
-          data(:image='img2')
-          data(:image='img3')
-          data(:image='img4')   
+  .container 
+    .row 
+      .col-xs-12.col-md-6.col-md-offset-3
+        h1 Easing and types
+        hr     
+        #example-1
+          .vj-slider(controls dots preload)   
+
+        br                  
+        .row(style='overflow: hidden')
+          .col-xs-12.col-md(style='margin-bottom: 20px')
+            h2 EASINGS 
+            hr  
+            select(v-model="selectedEasing" v-on:change="updateSlider()")
+              option(v-for="item in easings" v-bind:value="item") {{ item.title }} 
+          .col-xs-12.col-md(style='margin-bottom: 20px')
+            h2 ANIMATION     
+            hr  
+            select(v-model="selectedTypes" v-on:change="updateSlider()")
+              option(v-for="item in types" v-bind:value="item") {{ item.title }}
+          .col-xs-12.col-md(style='margin-bottom: 20px')
+            h2 SPEED 
+            hr  
+            input(v-model='selectedSpeed' type='number' step='500' v-on:change="updateSlider()") 
+                               
+        br
         xmp  
-          textarea 
+          textarea(v-if='!!slider') 
             |
-            |<div class='vj-slider' type='{{type.title}}'> 
+            |<div class='vj-slider' easing='{{selectedEasing.title}}' type='{{selectedTypes.title}}' controls dots> 
             |   <!-- INSERT IMAGES HERE -->
             |</div>     
-            |    
+            |  
+
+
     div(style='margin: 50px')
     h1 Modifiers
     hr
     div(style='margin: 50px')  
     .row
       .col-xs-12.col-md-4
-        p No dots or arrows
+        p No dots or bottom nav
         hr      
         .vj-slider(controls size='small')   
           data(:image='img1')
@@ -43,7 +57,7 @@
       .col-xs-12.col-md-4
         p No controls
         hr      
-        .vj-slider(dots size='small')   
+        .vj-slider(dots arrowdots size='small')   
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
@@ -51,7 +65,7 @@
         xmp  
           textarea 
             |
-            |<div class='vj-slider' dots> 
+            |<div class='vj-slider' dots arrowdots> 
             |   <!-- INSERT IMAGES HERE -->
             |</div>     
             |   
@@ -72,14 +86,14 @@
             |     
 
     div(style='margin: 50px')
-    h1 Variations
+    h1 Custom Elements
     hr
     div(style='margin: 50px')
     .row
       .col-xs-12.col-md-6
-        p Custom elements (Example 1)
+        p Basic HTML (Example 1)
         hr
-        .vj-slider(dots controls arrowdots size='large')   
+        .vj-slider(dots controls arrowdots)   
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
@@ -94,11 +108,8 @@
         xmp  
           textarea 
             |
-            |<div class='vj-slider' dots controls arrowdots size='large'> 
-            | 
-            |   <data image='https://picsum.photos/600/400?image=111'>
-            |   <data image='https://picsum.photos/600/400?image=222'>
-            |   <data image='https://picsum.photos/600/400?image=444'>
+            |<div class='vj-slider' dots controls arrowdots> 
+            |   <!-- INSERT IMAGES HERE -->
             | 
             |   <data type='dots' html='X'></div>
             |   <data type='leftarrowdot' html='<'></div>
@@ -109,9 +120,9 @@
             |</div> 
             |          
       .col-xs-12.col-md-6
-        p Custom elements (Font Awesome example)
+        p Font Awesome example
         hr
-        .vj-slider(dots controls arrowdots size='large')   
+        .vj-slider(dots controls arrowdots)   
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
@@ -125,11 +136,9 @@
         xmp  
           textarea 
             |
-            |<div class='vj-slider' dots controls arrowdots size='large'> 
+            |<div class='vj-slider' dots controls arrowdots> 
             | 
-            |   <data image='https://picsum.photos/600/400?image=111'>
-            |   <data image='https://picsum.photos/600/400?image=222'>
-            |   <data image='https://picsum.photos/600/400?image=444'>
+            |   <!-- INSERT IMAGES HERE -->
             | 
             |   <data type='dots' html='<i class="fas fa-circle"></i>'></div>
             |   <data type='leftarrowdot' html='<i class="fas fa-arrow-left"></i>'></div>
@@ -140,15 +149,12 @@
             |</div>    
             |
 
-    div(style='margin: 50px')
-    h1 Animated Texts
-    hr
-    div(style='margin: 50px') 
     .row
-      .col-xs-12.col-md-8.col-md-offset-2
-        p Animated Text
+      .col-xs-12.col-md-6.col-md-offset-3
+        div(style='margin: 50px')
+        h1 Animated Texts
         hr
-        .vj-slider(dots controls arrowdots size='small')   
+        .vj-slider(dots controls arrowdots)   
           data(:image='img1' header='Image 1' footer='Lorem ipsum is the best phrase' )
           data(:image='img2' header='Image 2' footer='Lorem ipsum is the best phrase' )
           data(:image='img3' header='Image 3' footer='Lorem ipsum is the best phrase' )
@@ -217,14 +223,14 @@
             |  
 
     div(style='margin: 50px')
-    h1 Touchscreen/Mobile devices
+    h1 Touchscreen / Mobile devices
     hr
     div(style='margin: 50px')  
     .row
-      .col-xs-12.col-md-6
-        h2 Touchscreen/mobile setup                
+      .col-xs-12.col-md-6.col-md-offset-3
+        h2 Scrollbar is hidden on mobile devices            
         div(style='margin: 10px')     
-        .vj-slider(touch size='small')   
+        .vj-slider(touch)   
           data(image='https://picsum.photos/400/400/?image=1082')
           data(image='https://picsum.photos/400/400/?image=1081')
           data(image='https://picsum.photos/400/400/?image=1080')          
@@ -245,7 +251,7 @@
       .col-xs-12.col-md-6
         p Default 
         hr      
-        .vj-slider(controls lazyload size='small' threshold=100)   
+        .vj-slider(controls lazyload threshold=500  mockdelay=2000)   
           data(image='https://picsum.photos/1200/1400/?image=1082')
           data(image='https://picsum.photos/1200/1400/?image=1081')
           data(image='https://picsum.photos/1200/1400/?image=1080')
@@ -253,15 +259,15 @@
         xmp  
           textarea 
             |
-            |<div class='vj-slider'> 
+            |<div class='vj-slider' lazyload threshold=500> 
             |   <!-- INSERT IMAGES HERE -->
             |</div>     
             |                 
 
       .col-xs-12.col-md-6
-        p Custom spinner 
+        p Custom spinner (Font Awesome example)
         hr      
-        .vj-slider(controls lazyload size='small' threshold=100)   
+        .vj-slider(controls lazyload threshold=500  mockdelay=2000)   
           data(image='https://picsum.photos/1200/1400/?image=444')
           data(image='https://picsum.photos/1200/1400/?image=1084')
           data(image='https://picsum.photos/1200/1400/?image=1075')
@@ -286,7 +292,7 @@
       .col-xs-12.col-md-6
         p Preload 
         hr      
-        .vj-slider(controls preload size='small')   
+        .vj-slider(controls preload)   
           data(:image='img1')
           data(:image='img2')
           data(:image='img3')
@@ -310,6 +316,10 @@ import img4 from "../assets/images/img4.jpg"
 export default {
   data () {
     return {
+      selectedTypes: null,
+      selectedEasing: null,
+      selectedSpeed: 700,
+      slider: null,
       types: [
         {title: 'slide'},
         {title: 'slip'},
@@ -327,23 +337,82 @@ export default {
         {title: 'fold'},
         {title: 'unfold'}
       ],
+      easings: [
+        {title: 'linear'},
+
+        {title: 'easeInQuad'},
+        {title: 'easeInCubic'},
+        {title: 'easeInQuart'},
+        {title: 'easeInQuint'},
+        {title: 'easeInSine'},
+        {title: 'easeInExpo'},
+        {title: 'easeInCirc'},
+        {title: 'easeInBack'},
+        {title: 'easeInElastic'},
+
+        {title: 'easeOutQuad'},
+        {title: 'easeOutCubic'},
+        {title: 'easeOutQuart'},
+        {title: 'easeOutQuint'},
+        {title: 'easeOutSine'},
+        {title: 'easeOutExpo'},
+        {title: 'easeOutBack'},
+        {title: 'easeOutElastic'},
+
+        {title: 'easeInOutQuad'},
+        {title: 'easeInOutCubic'},
+        {title: 'easeInOutQuart'},
+        {title: 'easeInOutQuint'},
+        {title: 'easeInOutSine'},
+        {title: 'easeInOutExpo'},
+        {title: 'easeInOutBack'},
+        {title: 'easeInOutElastic'},            
+      ],      
       img1, img2, img3, img4
     } 
   },
-  mounted: function () {
-    document.querySelectorAll('.vj-slider').forEach(ele => {
-      let slider = new VJSlider(ele);
+  mounted: function () {    
+    this.slider = new VJSlider( document.querySelector('#example-1 .vj-slider') );
+
+    document.querySelectorAll('.vj-slider').forEach((ele, index) => {
+      if(index > 0){new VJSlider(ele)}
     })   
-    document.querySelectorAll('textarea').forEach(ele => {
-      ele.style.height = (ele.scrollHeight-20) + "px"
-    })       
+
+    this.selectedTypes = this.types[0] 
+    this.selectedEasing = this.easings[10] 
+    setTimeout(() => {
+      this.updateSlider();      
+    })
   },
   methods: {
-    async foo(){
-      console.log( "Async works in About!" )
-    },
-    async bar(){
-      await this.foo();
+    updateSlider(){   
+      let {slider, selectedEasing, selectedTypes, selectedSpeed} = this
+
+      if(!!slider){
+        let parameters = {
+          images: [
+            {src: img1},
+            {src: img2},
+            {src: img3},
+            {src: img4}
+          ], 
+          options: {
+            type: selectedTypes.title,
+            easing: selectedEasing.title,
+            speed: selectedSpeed
+          }
+        }
+       
+        slider.build(parameters, false)      
+        document.querySelectorAll('textarea').forEach(ele => {
+          ele.style.height = (ele.scrollHeight-20) + "px"
+        })           
+      }
+
+    
+      // // console.log(slider)
+
+      
     }
   }
 }

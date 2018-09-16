@@ -2,43 +2,33 @@
   .container
     .row  
       .col-xs-12.col-md-6.col-md-offset-3
-        h2 Basic Setup        
+        h1 WHAT AM I
         hr       
-        h2 VJ-Slider is a lightweight, yet powerful, slider made with basic ass vanilla Javascript (hence the name - eh, clever) and powered by AnimeJS.  No jQuery dependency. Simple installation and highly customizable. 
-        div(style='margin: 10px')     
-        .vj-slider(size='small' controls dots preload type='fade')   
-          data(:image='img1')
-          data(:image='img2')
-          data(:image='img3')
-          data(:image='img4')  
-   
-
-    .row(style='margin-top: 50px')  
-      .col-xs-12.col-md-6.col-md-offset-3
-        h2 Touchscreen/mobile setup                
-        div(style='margin: 10px')     
-        .vj-slider(size='small' touch)   
-          data(image='https://picsum.photos/400/400/?image=1082')
-          data(image='https://picsum.photos/400/400/?image=1081')
-          data(image='https://picsum.photos/400/400/?image=1080')   
+        h2 VJ-Slider is a lightweight image slider made with just basic Javascript.  No jQuery dependency, simple installation and highly customizable.  Check it out! 
+        br
+        h2 (However, AnimeJS IS required). 
         br
         br
-        h2 Insert HTML on to page
+        h2 Basic Setup        
+        hr            
+        #example-1
+          .vj-slider(controls dots preload)   
+            data(:image='img1')
+            data(:image='img2')
+            data(:image='img3')
+            data(:image='img4')  
+        br
         xmp  
-          textarea 
+          textarea
             |
-            |<div class='vj-slider' touch> 
-            |   <!-- INSERT IMAGES HERE -->
+            |<div class='vj-slider' controls dots> 
+            |   <data image='https://picsum.photos/600/400?image=111' />
+            |   <data image='https://picsum.photos/600/400?image=444' />
+            |   <data image='https://picsum.photos/600/400?image=1078' />
+            |   <data image='https://picsum.photos/600/400?image=1079' />
             |</div>     
-            |    
-        br
-        br      
-        h2 Then execute in script
-        xmp  
-          textarea 
-            |
-            | import {VJSlider} from 'vjslider'
-            |            
+            |  
+
                 
 </template>
 
@@ -53,27 +43,16 @@ export default {
   name: 'home',
   data () {
     return {
-      types: [
-        {title: 'slip'},
-        {title: 'fade'},
-        {title: 'cascade'},
-        {title: 'waterfall'},
-        {title: 'leaf'},
-        {title: 'warpspeed'},
-        {title: 'hyperzoom'},
-        {title: 'newsroom'},
-        {title: 'flip'},
-        {title: 'unflip'},
-        {title: 'fold'},
-        {title: 'unfold'}
-      ],
       img1, img2, img3, img4
     }
   },
   mounted: function () {
-    document.querySelectorAll('.vj-slider').forEach(ele => {
-      let slider = new VJSlider(ele);
+    new VJSlider( document.querySelector('#example-1 .vj-slider') );
+  
+    document.querySelectorAll('.vj-slider').forEach((ele, index) => {
+      if(index > 0){new VJSlider(ele)}
     })   
+
     document.querySelectorAll('textarea').forEach(ele => {
       ele.style.height = (ele.scrollHeight-20) + "px"
     })       

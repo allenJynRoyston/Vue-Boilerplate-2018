@@ -5,53 +5,61 @@
         h1 Install       
         hr  
         div(style='margin: 50px')
-        h2 1. Grab it from NPM
+        h2 1. Install both vjslider and animejs from NPM or download the files manually
         xmp  
           textarea 
             |
-            | npm install vjslider
+            | npm install vjslider --save
+            | npm install animejs --save
             |
 
-        h2 2. Throw down some HTML
-        xmp  
-          textarea
-            | 
-            | <div class='vs-slider' dots controls arrowdots size='large'> 
-            |   <data image='https://picsum.photos/600/400?image=111'>
-            |   <data image='https://picsum.photos/600/400?image=222'>
-            |   <data image='https://picsum.photos/600/400?image=178'>
-            |   <data image='https://picsum.photos/600/400?image=444'>
-            | </div>
-            |   
+        br
 
-        h2 3. Import that bad boy into your project.
+        h2 2. Import that bad boy into your project or include the script file
         xmp  
-          textarea 
+          textarea.textarea-js 
             |
             | import {VJSlider} from 'vjslider'
             |
+            | OR  
+            |
+            | <script src='[file location]/vjs-slider.js' ></script>
+            |
 
-        h2 4. Initiate
+        br
+        h2 3. Import or link the CSS file
+        xmp  
+          textarea
+            |
+            | @import '[file location]/_slider';
+            |
+            | OR  
+            |
+            | <link rel="stylesheet" type="text/css" href="slider.css" />
+            |            
+
+        br
+        h2 3x. Change the .css to your liking (optional)
+        xmp  
+          textarea.textarea-js 
+            |
+            |  .js-slider{
+            |       ....
+            |  }
+            |     
+
+        br
+        h2 5. Initalize
         xmp  
           textarea
             |
             | new VJSlider(document.querySelector('.vs-slider'))
             |
-
-        h2 5. Change the CSS to your liking (optional) 
-        xmp  
-          textarea
-            |
-            |.vj-slider{
-            | // buttons, text, etc
-            |}
-
-        h2 6. Bask in the warmth of your genius
-        .vj-slider(dots controls arrowdots size='')   
-          data(image='https://picsum.photos/600/400?image=111' )
-          data(image='https://picsum.photos/600/400?image=222' )
-          data(image='https://picsum.photos/600/400?image=178' )
-          data(image='https://picsum.photos/600/400?image=444' )      
+        br
+        h2 6. VICTORY
+        br
+        .vj-slider   
+          data(:image='victory')
 
 
   
@@ -60,11 +68,12 @@
 
 <script>
 import {VJSlider} from '../assets/js/classes/slider'
+import victory from "../assets/images/victory.jpg"
 
 export default {
   data () {
     return {
-
+      victory
     }
   },
   mounted: function () {

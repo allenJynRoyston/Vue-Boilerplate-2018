@@ -8,6 +8,7 @@ import Navigation from '../components/Navigation.vue'
 import Home from '../components/Home.vue'
 import Examples from '../components/Examples.vue'
 import Install from '../components/Install.vue'
+import Advanced from '../components/Advanced.vue'
 import MainFooter from '../components/MainFooter.vue'
 import Card from '../components/Card.vue'
 
@@ -34,9 +35,15 @@ export default new Router({
       component: Examples
     },
     {
+      path: '/advanced',
+      name: 'Advanced',
+      component: Advanced
+    },    
+    {
       path: '/install',
       name: 'Install',
       component: Install
-    }    
+    }
+
   ]
 })
