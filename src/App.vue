@@ -21,5 +21,7 @@ export default {
 </style>
 
 <style lang="sass" scoped>
-
+  body
+    border: 0px
+    margin: 0px
 </style>

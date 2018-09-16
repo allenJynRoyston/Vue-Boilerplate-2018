@@ -189,7 +189,7 @@
             h2 AVAILABLE EASINGS
             hr                     
             xmp
-              span(style='color: 00ff00' v-for='ease in easings') 
+              span(style='color: #00ff00' v-for='ease in easings') 
                 | {{ease.title}} 
                 br
           .col-xs-6

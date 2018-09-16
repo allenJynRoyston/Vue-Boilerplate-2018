@@ -50,7 +50,8 @@ export default {
     background-color: rgba(0, 0, 0, 1)
     width: 100%
     z-index: 100
-
+    border: 0px
+    margin: 0px
 
     a
       text-decoration: none

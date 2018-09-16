@@ -33,6 +33,29 @@
             |</div>     
             |  
 
+    div(style='margin: 50px')    
+    .row
+      .col-xs-12.col-md-6.col-md-offset-3
+        div(style='margin: 50px')
+        h1 Touchscreen / Mobile devices
+        hr      
+        div(style='margin: 50px')  
+        h2 ** Scrollbar is hidden on mobile devices
+        hr          
+        div(style='margin: 10px')     
+        .vj-slider(touch)   
+          data(image='https://picsum.photos/400/400/?image=1082')
+          data(image='https://picsum.photos/400/400/?image=1081')
+          data(image='https://picsum.photos/400/400/?image=1080')          
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider' touch> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |    
+
+
 
     div(style='margin: 50px')
     h1 Modifiers
@@ -237,25 +260,6 @@
             |</div>     
             |  
 
-    div(style='margin: 50px')
-    h1 Touchscreen / Mobile devices
-    hr
-    div(style='margin: 50px')  
-    .row
-      .col-xs-12.col-md-6.col-md-offset-3
-        h2 Scrollbar is hidden on mobile devices            
-        div(style='margin: 10px')     
-        .vj-slider(touch)   
-          data(image='https://picsum.photos/400/400/?image=1082')
-          data(image='https://picsum.photos/400/400/?image=1081')
-          data(image='https://picsum.photos/400/400/?image=1080')          
-        xmp  
-          textarea 
-            |
-            |<div class='vj-slider' touch> 
-            |   <!-- INSERT IMAGES HERE -->
-            |</div>     
-            |    
 
 
     div(style='margin: 50px')

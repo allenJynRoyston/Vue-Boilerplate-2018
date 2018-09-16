@@ -12,7 +12,7 @@
         h2 Basic Setup        
         hr            
         #example-1
-          .vj-slider(controls dots preload type='waterfall')   
+          .vj-slider(controls dots preload )   
             data(:image='img1')
             data(:image='img2')
             data(:image='img3')
@@ -28,7 +28,7 @@
             |   <data image='https://picsum.photos/600/400?image=1079' />
             |</div>     
             |  
-
+            
                 
 </template>
 
