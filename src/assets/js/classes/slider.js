@@ -36,7 +36,7 @@ export class VJSlider {
         }     
         
 
-        this.animejsInstalled = !!anime ? true : false
+        this.animejsInstalled = !!anime ? false : true
         this.options.type = !this.animejsInstalled ? 'slide' : this.options.type 
 
         this.HTMLSnippets = {
@@ -221,8 +221,9 @@ export class VJSlider {
         // build vertical layout
         let verticalSlide = '';
         for(var i = 0; i < 3; i++){
-            verticalSlide += `<div class='__vs' style='width: calc(100%); height: calc(33.333334%);'></div>`     
+            verticalSlide += `<div class='__vs'  style='width: calc(100% - ${options.padding*2}px); height: calc(33.33334% - ${options.padding*2}px); float: block; padding: ${options.padding}px; background-color: white'></div>`     
         }   
+
 
         // build dots
         let dots = '';
@@ -259,6 +260,22 @@ export class VJSlider {
         }
         let _layout = document.createElement('div');
 
+        let _layouttype = '';        
+        if(this.determineType() === 'v'){
+            _layouttype = `
+                <div style='position: absolute; top: 0; left: 0; width: 100%; height: 300%; transform: translateY(-33.33334%); display: block'>                
+                    ${verticalSlide}        
+                </div>
+            `
+        }
+        if(this.determineType() === 'h'){
+            _layouttype = `
+                <div style='position: absolute; top: 0; left: 0; width: 300%; height: 100%; transform: translateX(-33.33334%)' z-index: -1'>                
+                    ${horizontalSlide}                                
+                </div>
+            `
+        }
+
         // TRANSITION SLIDES
         if(!options.touch){
           _layout.innerHTML =`
@@ -266,30 +283,14 @@ export class VJSlider {
           <div id='${this.randomId}' class='vj-slider--container' style='opacity: ${options.preload ? 0 : 1}'>
             <div class='vj-slider vj-slider--${options.size === "default" ? 'default' : options.size === "small" ? 'small' : 'large'}''  style='width: calc(100% - ${options.padding*2}px); padding: ${options.padding}px; position: relative; overflow: hidden;'>
                               
-                <!-- UNDERLAY -->
                 <div class='__underlay'></div>
+                ${_layouttype}
+                <div class='__overlay' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%'></div>
 
-                <!-- vertical -->
-                <div style='position: absolute; top: 0; left: 0; width: 100%; height: 300%; transform: translateY(-33.33334%); display: ${this.determineType() === 'h' ? 'none' : 'block'}'>                
-                    ${verticalSlide}        
-                </div>
-
-                <!-- horizontal -->
-                <div style='position: absolute; top: 0; left: 0; width: 300%; height: 100%; transform: translateX(-33.33334%)' display: ${this.determineType() === 'h' ? 'block' : 'none'}'>                
-                    ${horizontalSlide}                                
-                </div>
-
-                <!-- OVERLAY -->
-                <div class='__overlay' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%'>
-
-                </div>
-
-                <!-- LOADING -->
                 <div class='__loading' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none'>
                   ${this.HTMLSnippets.lazyloader}                
                 </div>              
       
-                <!-- BUTTONS -->
                 <div class='vj-slider--button-left __button '>
                     <button class='icon'>
                         ${this.HTMLSnippets.leftbtn}
@@ -301,18 +302,13 @@ export class VJSlider {
                     </button>
                 </div>     
 
-                <!-- TEXTS -->
                 ${texts}
   
-                <!-- IMAGE LOADER -->
-                <div id='__ll_master' style='position: absolute; z-index: -1; pointer-events: none'>
-                    
-                </div>
+                <div id='__ll_master' style='position: absolute; z-index: -1; pointer-events: none'></div>
 
-                <!-- PRELOADED IMAGES -->
                 ${preloadImages}
             </div>
-            <!-- DOTS -->
+            
             <div class='vj-slider--dots-container'>
                 ${dots}
             </div>      

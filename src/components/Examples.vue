@@ -39,7 +39,22 @@
     hr
     div(style='margin: 50px')  
     .row
-      .col-xs-12.col-md-4
+      .col-xs-12.col-md-3
+        p Padding / BG Color
+        hr      
+        .vj-slider(controls padding=10 cardbg='orange' size='small')   
+          data(:image='img1')
+          data(:image='img2')
+          data(:image='img3')
+          data(:image='img4')   
+        xmp  
+          textarea 
+            |
+            |<div class='vj-slider' padding=10 cardbg='orange'> 
+            |   <!-- INSERT IMAGES HERE -->
+            |</div>     
+            |      
+      .col-xs-12.col-md-3
         p No dots or bottom nav
         hr      
         .vj-slider(controls size='small')   
@@ -54,7 +69,7 @@
             |   <!-- INSERT IMAGES HERE -->
             |</div>     
             |   
-      .col-xs-12.col-md-4
+      .col-xs-12.col-md-3
         p No controls
         hr      
         .vj-slider(dots arrowdots size='small')   
@@ -69,7 +84,7 @@
             |   <!-- INSERT IMAGES HERE -->
             |</div>     
             |   
-      .col-xs-12.col-md-4
+      .col-xs-12.col-md-3
         p Autoplay
         hr      
         .vj-slider(autoplay size='small')   

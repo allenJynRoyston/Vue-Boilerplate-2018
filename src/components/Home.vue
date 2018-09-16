@@ -12,7 +12,7 @@
         h2 Basic Setup        
         hr            
         #example-1
-          .vj-slider(controls dots preload)   
+          .vj-slider(controls dots preload type='waterfall')   
             data(:image='img1')
             data(:image='img2')
             data(:image='img3')
