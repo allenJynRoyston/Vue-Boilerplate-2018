@@ -1,7 +1,9 @@
 <template lang="pug">
-  section
-    .custom-header
-      h1 Boilerplate
+  section(v-show='currentroute === "/"')
+    .custom-header.center
+      .image(:style='"background:url(" + headerImg.default + ") center center no-repeat; background-size: cover; width: 100%; height: 100%"')
+      .hero
+        h1 Hello World
 </template>
 
 <script src='./header.js'></script>
@@ -9,10 +11,16 @@
 
 <style lang="sass" scoped>
   .custom-header
-    background-color: black
-    color: white
+    position: relative
     width: 100%
-    border: 1px solid black
-    padding-top: 20px
-    padding-left: 10px
+    height: 200px
+
+    .hero
+      position: absolute
+      color: white
+      font-size: 2em
+
+      h1
+        padding: 0px
+        margin: 0px
 </style>

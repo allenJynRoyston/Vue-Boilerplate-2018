@@ -69,7 +69,8 @@ export default {
 </script>
 
 <style lang="scss">
-  @import './assets/css/global.css';
+  @import '../node_modules/flexboxgrid/css/flexboxgrid.min.css';
+  @import './assets/css/global.css';  
 </style>
 
 <style lang="sass" scoped>

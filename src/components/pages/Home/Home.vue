@@ -2,37 +2,16 @@
   .section
     .container
       .row
-        h1 HOME
-      .row
-        .twelve.columns 12   
-      .row
-        .one.columns 1
-        .eleven.columns 11
-      .row
-        .two.columns 2
-        .ten.columns 10      
-      .row
-        .three.columns 3
-        .nine.columns 9
-      .row
-        .four.columns 4
-        .eight.columns 8
-      .row
-        .five.columns 5
-        .seven.columns 7    
-      .row
-        .six.columns 6
-        .six.columns 6
+        .col-xs-12.col-no-gutter
+          h1 HOME
+          hr
+          p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
 </template>
 
 <script src='./home.js'></script>
 
 <style lang="sass" scoped>
-  .columns
-    border: 1px solid white
-    background-color: lightgray
-    color: black
-    margin-top: 10px
-    text-align: center
-    padding: 5px 0px 5px 0px
+
 </style>

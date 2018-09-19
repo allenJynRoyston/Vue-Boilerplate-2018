@@ -10,7 +10,7 @@ import {Home, About, Game, Three, Pixi} from './components/'
 import {PixiComponent, GameComponent, ThreeComponent, Navigation, Overlay, Header, Footer, DrawerComponent, GridComponent, Test} from './components/'
 
 
-// shared elements
+// global elements
 Vue.component('PixiComponent', PixiComponent)
 Vue.component('GameComponent', GameComponent)
 Vue.component('ThreeComponent',ThreeComponent)

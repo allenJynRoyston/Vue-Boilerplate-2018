@@ -5,6 +5,7 @@ export default {
         return {
             route: this.$route,
             store: this.$store,
+            currentroute: this.$route.path,
             logo: logo,
             headerIsOpen: null,
             drawerIsOpen: null,
@@ -26,6 +27,11 @@ export default {
             this.setDrawer(val);
         });
     },
+    watch: {
+        '$route'(to, from) {
+            this.currentroute = to.path;
+        }
+    },
     methods: {
         setHeader(val, instant = false) {
             this.headerIsOpen = val;
@@ -35,7 +41,7 @@ export default {
                 anime({
                     targets: document.querySelector('#animateme'),
                     padding: val ? '40px' : '15px',
-                    backgroundColor: val ? '#596673' : '#2f2f2f',
+                    backgroundColor: val ? 'rgba(0, 0, 0, .5)' : 'rgba(0, 0, 0, .25)',
                     duration: instant ? 0 : 500,
                 });
                 anime({

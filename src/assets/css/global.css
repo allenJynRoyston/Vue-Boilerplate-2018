@@ -1,7 +1,22 @@
 /*  NORMALIZE AND SKELETON CSS FOR BASIC STYLES */
 @import './normalize.css';
-@import './skeleton.css';
 
+body{
+  background-color: #546270;
+  color: white
+}
+
+.container{
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto
+}
+
+.center{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /*  BASIC CUSTOM STYLINGS */
 a, .is-cursor{
@@ -19,4 +34,10 @@ a, .is-cursor{
 
 .outline{
   border: 1px solid red ;
+}
+
+
+/*  GRID ADDENDUMS */
+.col-no-gutter{
+  padding: 0px!important
 }
