@@ -47,7 +47,7 @@ export default {
         anime({
           targets: document.querySelector('#animateme'),
           padding: val ? '40px' : '15px',
-          backgroundColor: val ? 'rgba(0, 0, 0, .5)' : 'rgba(0, 0, 0, .25)',
+          //backgroundColor: val ? 'rgba(0, 0, 0, .5)' : 'rgba(0, 0, 0, .25)',
           duration: instant ? 0 : 500,
         });
 
