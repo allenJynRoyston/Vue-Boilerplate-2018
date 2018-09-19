@@ -4,6 +4,8 @@ const fs = require('fs')
 const path = require('path')
 const compression = require('compression');
 const app = express()
+const nodemailer = require('nodemailer');
+
 
 // setup compression
 app.use(compression())
