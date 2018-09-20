@@ -5,15 +5,15 @@ import VueResource from 'vue-resource'
 
 /* IMPORT COMPONENTS */
 // page components
-import {Home, About, Game, Three, Pixi} from './components/'
+import {Home, About, Phaser, Three, Pixi} from './components/'
 // element components
-import {PixiComponent, GameComponent, ThreeComponent, Navigation, Overlay, Header, Footer, DrawerComponent, GridComponent, Test} from './components/'
+import {PixiComponent, PhaserComponent, ThreeComponent, Navigation, Overlay, Header, Footer, DrawerComponent, GridComponent, Test} from './components/'
 
 
 // global elements
 Vue.component('PixiComponent', PixiComponent)
-Vue.component('GameComponent', GameComponent)
-Vue.component('ThreeComponent',ThreeComponent)
+Vue.component('ThreeComponent', ThreeComponent)
+Vue.component('PhaserComponent',PhaserComponent)
 Vue.component('SiteNavigation', Navigation)
 Vue.component('SiteOverlay', Overlay)
 Vue.component('SiteHeader', Header)
@@ -42,7 +42,7 @@ export default new Router({
     {
       path: '/phaser',
       name: 'Phaser',
-      component: Game
+      component: Phaser
     },
     {
       path: '/three',

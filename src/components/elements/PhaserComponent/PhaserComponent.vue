@@ -1,9 +1,9 @@
 <template lang="pug">
-  .container    
-      pixi-component
+  #phaser-example
 </template>
 
-<script src='./pixi.js'></script>
+<script src='./phaserComponent.js'></script>
+
 
 <style lang="sass" scoped>
 

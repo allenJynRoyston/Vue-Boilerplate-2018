@@ -1,61 +1,41 @@
-declare var __pixi: any;
+import {VJScriptLoader} from "../../../assets/js/vjs-scriptloader";
+import {VJSPixiloader} from "../../../assets/js/vjs-loaders";
 
 export default {
   props: [],
-  data () {
+  data():Object {
     return {
       game: null,
       store: this.$store,
-    }
+      scriptLoader: new VJScriptLoader(),
+      pixiInstance: null
+    };
   },
-  mounted(){
-    this.init()
+  mounted():void {
+    this.init();
   },
   methods: {
-    init(){
-      this.loadGame('src/_pixi/pixi_demo.js')
+    init():void {
+      this.loadGame(`src/_pixi/pixi.test.js`)
     },
-    async loadGame(fileLocation){
-
-      // remove old game first
-      if(this.game !== null){
-        this.game = null;
+    async loadGame(file:string):Promise<any> {
+      let {game, store, scriptLoader, pixiInstance} = this;
+      if(game !== null){
+        game = null;
       }
+      if(!store.getters._pixiJSIsLoaded()) {
+        await scriptLoader.loadFile(`/node_modules/pixi.js/dist/pixi.min.js`);
+        store.commit("setPixiIsLoaded", true);
+        store.commit("setPhaserIsLoaded", false);
+      }
+      await scriptLoader.loadFile(file);
       
-      // load threeJS (once)
-      if(!this.store.getters._pixiJSIsLoaded()){
-        await new Promise((resolve, reject) => {
-          let js = document.createElement("script");
-              js.type = "text/javascript";
-              js.src = `/node_modules/pixi.js/dist/pixi.min.js`;
-              document.body.appendChild(js);
-              js.onload = (() => {                
-                this.store.commit('setPixiIsLoaded', true)
-                this.store.commit('setPhaserIsLoaded', false)
-                resolve()              
-              })
-        })
-      }      
-
-      // load game file
-      await new Promise((resolve, reject) => {
-        let js = document.createElement("script");
-            js.type = "text/javascript";
-            js.src = `${fileLocation}`;
-            document.body.appendChild(js);
-            js.onload = (() => {
-              resolve()              
-            })
-      })
-
-      // load new one
-       __pixi.init(this.$el, this, {width: 800, height: 600});
-     
+      // load pixi instance
+      pixiInstance = new VJSPixiloader({ele: this.$el, component: this, file, width: 800, height: 600})
+      await pixiInstance.createNew()
     }
   },
-  destroyed() {
-    //function PixiObject() {};
-    
-    this.game = null;
+  destroyed():void {
+
   }
-}
+};

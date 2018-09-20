@@ -1,5 +1,5 @@
 export default {
-    props: ['data', 'columns', 'rows', 'blocksize', 'padding'],
+    props: ["data", "columns", "rows", "blocksize", "padding"],
     data() {
         return {
             store: this.$store,
@@ -28,9 +28,9 @@ export default {
                 box: `__${randomId}_grid-box`,
                 inside: `__${randomId}_grid-inside`,
             };
-            // Create the <style> tag
-            let style = document.createElement('style');
-            // WebKit hack :(
+            // create the <style> tag
+            let style = document.createElement("style");
+            // webKit hack :(
             let rtStylesheet = `
         .${classes.wrapper}{
           display: grid;
@@ -44,28 +44,28 @@ export default {
           row-gap: ${padding}px;
           column-gap: ${padding}px;
           grid-template-columns: repeat(${gridSize.columns}, ${(100 / gridSize.columns)}%);
-          grid-template-rows: repeat(${gridSize.rows}, ${blocksize}px);          
-        }  
+          grid-template-rows: repeat(${gridSize.rows}, ${blocksize}px);
+        }
 
         /* tablet grid */
         @media only screen and (max-width: ${breakpoints.tablet}px) {
           .${classes.container} {
             display: grid;
             grid-template-columns: 50% 50%;
-            grid-template-rows: repeat(auto, ${blocksize}px);             
-          }  
-        }  
+            grid-template-rows: repeat(auto, ${blocksize}px);
+          }
+        }
 
         /* mobile grid */
         @media only screen and (max-width: ${breakpoints.mobile}px) {
           .${classes.container} {
             display: grid;
             grid-template-columns: 100%;
-            grid-template-rows: repeat(auto,${blocksize}px);            
-          }  
-        }          
+            grid-template-rows: repeat(auto,${blocksize}px);
+          }
+        }
 
-        .${classes.box} {          
+        .${classes.box} {
           font-size: 150%;
           overflow: hidden
         }
@@ -77,8 +77,8 @@ export default {
           color: #fff;
           display: flex;
           align-items: center;
-          justify-content: center;          
-        }        
+          justify-content: center;
+        }
       `;
             // add to DOM
             style.appendChild(document.createTextNode(rtStylesheet));
@@ -87,7 +87,6 @@ export default {
             return style.sheet;
         })();
         this.gridConfig = { blockStyles, data, breakpoints, gridSize };
-        console.log(this.gridConfig);
     },
     methods: {
         setGridSize(ele, index) {
@@ -96,16 +95,16 @@ export default {
             let style;
             // for desktop
             style = `
-        .${styleName} { 
-          grid-column: ${ele.location.column}/ ${(ele.location.column + ele.size)};  
-          grid-row: ${ele.location.row}/ ${(ele.location.row + ele.size)}; 
+        .${styleName} {
+          grid-column: ${ele.location.column}/ ${(ele.location.column + ele.size)};
+          grid-row: ${ele.location.row}/ ${(ele.location.row + ele.size)};
         }
       `;
             blockStyles.insertRule(`${style}`, blockStyles.cssRules.length);
             // for tablet
             style = `
         @media only screen and (max-width: ${breakpoints.tablet}px) {
-          .${styleName} { 
+          .${styleName} {
             grid-column: auto;
             grid-row: auto;
             height: ${gridSize.blocksize}px
@@ -116,7 +115,7 @@ export default {
             // for mobile
             style = `
       @media only screen and (max-width: ${breakpoints.mobile}px) {
-        .${styleName} { 
+        .${styleName} {
           grid-column: auto;
           grid-row: auto;
           height: ${gridSize.blocksize}px

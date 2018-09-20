@@ -1,16 +1,12 @@
 export default {
-  data () {
+  data():any {
     return {
       store: this.$store,
-    }
+    };
   },
   methods: {
-    
   },
-  mounted(){
-    this.isReady = true
-  },
-  destroyed(){
-
+  mounted():void {
+    this.isReady = true;
   }
-}
+};

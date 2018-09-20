@@ -6,12 +6,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
+import { VJSThreeloader } from "../../../assets/js/vjs-loaders";
 export default {
     props: [],
     data() {
         return {
             game: null,
             store: this.$store,
+            scriptLoader: new VJScriptLoader(),
+            threeInstance: null
         };
     },
     mounted() {
@@ -19,39 +23,22 @@ export default {
     },
     methods: {
         init() {
-            this.loadGame('src/_threeJS/ts_demo.js');
+            this.loadGame('src/_threeJS/three.test.js');
         },
-        loadGame(fileLocation) {
+        loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                // remove old game first
-                if (this.game !== null) {
-                    this.game = null;
+                let { game, store, scriptLoader, threeInstance } = this;
+                if (game !== null) {
+                    game = null;
                 }
-                // load threeJS (once)
-                if (!this.store.getters._threeJSIsLoaded()) {
-                    yield new Promise((resolve, reject) => {
-                        let js = document.createElement("script");
-                        js.type = "text/javascript";
-                        js.src = `/node_modules/three/build/three.min.js`;
-                        document.body.appendChild(js);
-                        js.onload = (() => {
-                            this.store.commit('setThreeJsIsLoaded', true);
-                            resolve();
-                        });
-                    });
+                if (!store.getters._threeJSIsLoaded()) {
+                    yield scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);
+                    store.commit("setThreeJsIsLoaded", true);
                 }
-                // load game file
-                yield new Promise((resolve, reject) => {
-                    let js = document.createElement("script");
-                    js.type = "text/javascript";
-                    js.src = `${fileLocation}`;
-                    document.body.appendChild(js);
-                    js.onload = (() => {
-                        resolve();
-                    });
-                });
-                // load new one
-                __three.init(this.$el, this, { width: 800, height: 600 });
+                yield scriptLoader.loadFile(file);
+                // load instance
+                threeInstance = new VJSThreeloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
+                yield threeInstance.createNew();
             });
         }
     },

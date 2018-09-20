@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
-import { VJSPixiloader } from "../../../assets/js/vjs-loaders";
+import { VJSPhaserloader } from "../../../assets/js/vjs-loaders";
 export default {
     props: [],
     data() {
@@ -15,7 +15,7 @@ export default {
             game: null,
             store: this.$store,
             scriptLoader: new VJScriptLoader(),
-            pixiInstance: null
+            phaserInstance: null
         };
     },
     mounted() {
@@ -23,27 +23,29 @@ export default {
     },
     methods: {
         init() {
-            this.loadGame(`src/_pixi/pixi.test.js`);
+            this.loadGame(`src/_phaser/phaser.test.js`);
         },
         loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                let { game, store, scriptLoader, pixiInstance } = this;
+                let { game, store, scriptLoader, phaserInstance } = this;
+                // remove old game first
                 if (game !== null) {
-                    game = null;
+                    game.destroy();
                 }
-                if (!store.getters._pixiJSIsLoaded()) {
-                    yield scriptLoader.loadFile(`/node_modules/pixi.js/dist/pixi.min.js`);
-                    store.commit("setPixiIsLoaded", true);
-                    store.commit("setPhaserIsLoaded", false);
+                // load phaser (once)
+                if (!store.getters._phaserIsLoaded()) {
+                    yield scriptLoader.loadFile(`/node_modules/phaser-ce/build/phaser.min.js`);
+                    store.commit("setPixiIsLoaded", false);
+                    store.commit("setPhaserIsLoaded", true);
                 }
                 yield scriptLoader.loadFile(file);
                 // load pixi instance
-                pixiInstance = new VJSPixiloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
-                yield pixiInstance.createNew();
+                phaserInstance = new VJSPhaserloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
+                yield phaserInstance.createNew();
             });
         }
     },
     destroyed() {
     }
 };
-//# sourceMappingURL=pixiComponent.js.map
+//# sourceMappingURL=PhaserComponent.js.map

@@ -3,7 +3,7 @@ export default {
         return {
             store: this.$store,
             progress: 0,
-            isActive: null
+            isActive: null,
         };
     },
     mounted() {

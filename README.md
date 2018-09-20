@@ -1,9 +1,9 @@
 ## What am I?
-A sleek, slim, and sexy Vue boilerplate project with support for ThreeJS, Pixi and Phaser already included.  Even better, they can all be utilized AT THE SAME TIME.  Several examples included within!  Build your website or webapp in half the time with this meticulously crafted and beautifully structured boilerplate today!
+* Under construction *
 
 
 ## Preview
-[Click here](https://vue-vuex-es6-webpack-phaser-bp.herokuapp.com/#/)
+
 
 
 ## Core technologies
@@ -25,9 +25,6 @@ A sleek, slim, and sexy Vue boilerplate project with support for ThreeJS, Pixi a
 
 
 ## Build size
-Vue/Vuex/AnimeJS/SkeletonCSS and Axios (basically all nicities you'd need for developing a modern website/webapp) are included by default.  Despite that, the total end result bundle is approximately **~189kb**.  
-
-Phaser/Pixi/ThreeJS files (and their associated dependencies) are loaded independently and only when needed (see more details below).  This ensures that the project is **very fast and shockingly light**.
 
 
 

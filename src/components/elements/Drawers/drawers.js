@@ -19,19 +19,19 @@ export default {
     },
     methods: {
         closeDrawer() {
-            this.store.commit('setDrawerState', false);
+            this.store.commit("setDrawerState", false);
         },
         setDrawerState(val) {
             anime.timeline()
                 .add({
-                targets: document.querySelector('#drawers'),
-                translateX: val ? 0 : '-100%',
+                targets: document.querySelector("#drawers"),
+                translateX: val ? 0 : "-100%",
                 duration: 0,
             })
                 .add({
-                targets: document.querySelector('#drawers .slide-1'),
-                translateX: val ? 0 : '-100%',
-                easing: 'easeOutExpo',
+                targets: document.querySelector("#drawers .slide-1"),
+                translateX: val ? 0 : "-100%",
+                easing: "easeOutExpo",
                 duration: 500,
                 delay: 100
             });

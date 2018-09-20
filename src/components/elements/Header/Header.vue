@@ -1,5 +1,5 @@
 <template lang="pug">
-  section(v-show='currentroute === "/"')
+  section
     .custom-header.center
       .image(:style='"background:url(" + headerImg.default + ") center center no-repeat; background-size: cover; width: 100%; height: 100%"')
       .hero
@@ -14,6 +14,7 @@
     position: relative
     width: 100%
     height: 200px
+    overflow: hidden
 
     .hero
       position: absolute

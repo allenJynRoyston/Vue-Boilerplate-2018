@@ -1,22 +1,25 @@
-import * as headerImg from '../../../assets/images/site/img.jpg'
+import * as headerImg from "../../../assets/images/site/img.jpg";
+import anime from 'animejs'
 
 export default {
-  data () {
+  data():Object {
     return {
       headerImg,
-      currentroute: this.$route.path,
       store: this.$store
-    }
-  },
-  created() {
-
+    };
   },
   watch: {
-    '$route' (to, from) {
-      this.currentroute = to.path
+    "$route"(to:any, from:any):void {      
+      anime({
+        easing: 'easeOutSine',
+        targets: document.querySelector("body"),
+        translateY: (to.path !== '/') ? `-${ (document.querySelector(".custom-header") as any).offsetHeight}px` : "0px",
+        duration: 250,
+        delay: 500
+      });      
     }
-  },    
+  },
   methods: {
 
   }
-}
+};

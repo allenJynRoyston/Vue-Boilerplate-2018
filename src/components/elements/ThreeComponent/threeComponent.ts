@@ -1,57 +1,40 @@
-declare var __three: any;
+import {VJScriptLoader} from "../../../assets/js/vjs-scriptloader";
+import {VJSThreeloader} from "../../../assets/js/vjs-loaders";
 
 export default {
   props: [],
-  data () {
+  data():Object {
     return {
       game: null,
       store: this.$store,
+      scriptLoader: new VJScriptLoader(),
+      threeInstance: null
     }
   },
-  mounted(){
+  mounted():void {
     this.init()
   },
   methods: {
-    init(){
-      this.loadGame('src/_threeJS/ts_demo.js')
+    init():void {
+      this.loadGame('src/_threeJS/three.test.js')
     },
-    async loadGame(fileLocation){
-      // remove old game first
-      if(this.game !== null){
-        this.game = null;
+    async loadGame(file:string):Promise<any> {
+      let {game, store, scriptLoader, threeInstance} = this;
+      if(game !== null){
+        game = null;
       }
-
-      // load threeJS (once)
-      if(!this.store.getters._threeJSIsLoaded()){
-        await new Promise((resolve, reject) => {
-          let js = document.createElement("script");
-              js.type = "text/javascript";
-              js.src = `/node_modules/three/build/three.min.js`;
-              document.body.appendChild(js);
-              js.onload = (() => {
-                this.store.commit('setThreeJsIsLoaded', true)
-                resolve()              
-              })
-        })
-      }      
-
-      // load game file
-      await new Promise((resolve, reject) => {
-        let js = document.createElement("script");
-            js.type = "text/javascript";
-            js.src = `${fileLocation}`;
-            document.body.appendChild(js);
-            js.onload = (() => {
-              resolve()              
-            })
-      })
-
-      // load new one
-       __three.init(this.$el, this, {width: 800, height: 600});
-
+      if(!store.getters._threeJSIsLoaded()){
+        await scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);
+        store.commit("setThreeJsIsLoaded", true)
+      }
+      await scriptLoader.loadFile(file);
+      
+      // load instance
+      threeInstance = new VJSThreeloader({ele: this.$el, component: this, file, width: 800, height: 600})
+      await threeInstance.createNew()       
     }
   },
-  destroyed() {
+  destroyed():void {
     this.game = null;
   }
 }

@@ -16,11 +16,11 @@ export default {
         // get routes from store
         this.routes = this.store.getters._getRoutes();
         // set and watch header state
-        this.headerIsOpen = true; //this.store.getters._headerIsOpen()
+        this.headerIsOpen = true; // this.store.getters._headerIsOpen()
         this.store.watch(this.store.getters._headerIsOpen, val => {
             this.setHeader(val);
         });
-        this.setHeader(this.route.path !== '/', true);
+        this.setHeader(this.route.path !== "/", true);
         // set and watch drawer state
         this.drawerIsOpen = this.store.getters._drawerIsOpen();
         this.store.watch(this.store.getters._drawerIsOpen, val => {
@@ -28,24 +28,24 @@ export default {
         });
     },
     watch: {
-        '$route'(to, from) {
+        "$route"(to, from) {
             this.currentroute = to.path;
         }
     },
     methods: {
         setHeader(val, instant = false) {
             this.headerIsOpen = val;
-            this.store.commit('setHeader', val);
+            this.store.commit("setHeader", val);
             // only animate if it's not mobile
             if (!this.store.getters._getIsMobile()) {
                 anime({
-                    targets: document.querySelector('#animateme'),
-                    padding: val ? '40px' : '15px',
-                    backgroundColor: val ? 'rgba(0, 0, 0, .5)' : 'rgba(0, 0, 0, .25)',
+                    targets: document.querySelector("#animateme"),
+                    padding: val ? "40px" : "15px",
+                    backgroundColor: val ? "rgba(0, 0, 0, .5)" : "rgba(0, 0, 0, .25)",
                     duration: instant ? 0 : 500,
                 });
                 anime({
-                    targets: document.querySelector('.left-link'),
+                    targets: document.querySelector(".left-link"),
                     opacity: val ? 1 : 0,
                     duration: instant ? 0 : 250,
                 });
@@ -53,7 +53,7 @@ export default {
         },
         setDrawer(val) {
             this.drawerIsOpen = val;
-            this.store.commit('setDrawerState', val);
+            this.store.commit("setDrawerState", val);
         }
     }
 };
