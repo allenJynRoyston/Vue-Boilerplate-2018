@@ -6,12 +6,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
 export default {
     props: [],
     data() {
         return {
             game: null,
             store: this.$store,
+            scriptLoader: new VJScriptLoader(),
             demos: [
                 { title: "Sprite Class Manager", file: "boilerplate/spriteManagerDemo.min.js" },
                 { title: "Controller Class Manager", file: "boilerplate/controllerManagerDemo.min.js" },
@@ -25,9 +27,9 @@ export default {
     },
     methods: {
         init() {
-            this.loadGame("boilerplate/spriteManagerDemo.min.js");
+            // this.loadGame("boilerplate/spriteManagerDemo.min.js")
         },
-        loadGame(fileName) {
+        loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
                 // remove old game first
                 if (this.game !== null) {
@@ -35,28 +37,11 @@ export default {
                 }
                 // load phaser (once)
                 if (!this.store.getters._phaserIsLoaded()) {
-                    yield new Promise((resolve, reject) => {
-                        let js = document.createElement("script");
-                        js.type = "text/javascript";
-                        js.src = `/node_modules/phaser-ce/build/phaser.min.js`;
-                        document.body.appendChild(js);
-                        js.onload = (() => {
-                            this.store.commit('setPixiIsLoaded', false);
-                            this.store.commit('setPhaserIsLoaded', true);
-                            resolve();
-                        });
-                    });
+                    yield this.scriptLoader.loadFile(`/node_modules/phaser-ce/build/phaser.min.js`);
+                    this.store.commit("setPixiIsLoaded", false);
+                    this.store.commit("setPhaserIsLoaded", true);
                 }
-                // load game file
-                yield new Promise((resolve, reject) => {
-                    let js = document.createElement("script");
-                    js.type = "text/javascript";
-                    js.src = `src/_phaser/${fileName}`;
-                    document.body.appendChild(js);
-                    js.onload = (() => {
-                        resolve();
-                    });
-                });
+                yield this.scriptLoader.loadFile(file);
                 __phaser.init(this.$el, this, { width: 640, height: 640 });
             });
         },

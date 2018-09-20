@@ -21,47 +21,27 @@ export default {
     },
     methods: {
         init() {
-            // this.loadGame('src/_pixi/pixi_demo.js')
+            this.loadGame(`src/_pixi/pixi_demo.js`);
         },
-        loadGame(fileLocation) {
+        loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                fileLocation = null;
-                // // remove old game first
-                // if(this.game !== null){
-                //   this.game = null;
-                // }
-                // // load threeJS (once)
-                // if(!this.store.getters._pixiJSIsLoaded()){
-                //   await new Promise((resolve, reject) => {
-                //     let js = document.createElement("script");
-                //         js.type = "text/javascript";
-                //         js.src = `/node_modules/pixi.js/dist/pixi.min.js`;
-                //         document.body.appendChild(js);
-                //         js.onload = (() => {
-                //           this.store.commit('setPixiIsLoaded', true)
-                //           this.store.commit('setPhaserIsLoaded', false)
-                //           resolve()
-                //         })
-                //   })
-                // }
-                // // load game file
-                // await new Promise((resolve, reject) => {
-                //   let js = document.createElement("script");
-                //       js.type = "text/javascript";
-                //       js.src = `${fileLocation}`;
-                //       document.body.appendChild(js);
-                //       js.onload = (() => {
-                //         resolve()
-                //       })
-                // })
-                // // load new one
-                //  __pixi.init(this.$el, this, {width: 800, height: 600});
+                if (this.game !== null) {
+                    this.game = null;
+                }
+                if (!this.store.getters._pixiJSIsLoaded()) {
+                    yield this.scriptLoader.loadFile(`/node_modules/pixi.js/dist/pixi.min.js`);
+                    this.store.commit("setPixiIsLoaded", true);
+                    this.store.commit("setPhaserIsLoaded", false);
+                }
+                yield this.scriptLoader.loadFile(file);
+                __pixi.init(this.$el, this, { width: 800, height: 600 });
             });
         }
     },
     destroyed() {
-        // function PixiObject(){};
-        // this.game = null;
+        function PixiObject() { }
+        ;
+        this.game = null;
     }
 };
 //# sourceMappingURL=pixiComponent.js.map

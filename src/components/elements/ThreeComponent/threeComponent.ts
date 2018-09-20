@@ -1,57 +1,35 @@
+import {VJScriptLoader} from "../../../assets/js/vjs-scriptloader";
 declare var __three: any;
 
 export default {
   props: [],
-  data () {
+  data():Object {
     return {
       game: null,
       store: this.$store,
+      scriptLoader: new VJScriptLoader()
     }
   },
-  mounted(){
+  mounted():void {
     this.init()
   },
   methods: {
-    init(){
+    init():void {
       this.loadGame('src/_threeJS/ts_demo.js')
     },
-    async loadGame(fileLocation){
-      // remove old game first
+    async loadGame(file:string):Promise<any> {
       if(this.game !== null){
         this.game = null;
       }
-
-      // load threeJS (once)
       if(!this.store.getters._threeJSIsLoaded()){
-        await new Promise((resolve, reject) => {
-          let js = document.createElement("script");
-              js.type = "text/javascript";
-              js.src = `/node_modules/three/build/three.min.js`;
-              document.body.appendChild(js);
-              js.onload = (() => {
-                this.store.commit('setThreeJsIsLoaded', true)
-                resolve()              
-              })
-        })
-      }      
-
-      // load game file
-      await new Promise((resolve, reject) => {
-        let js = document.createElement("script");
-            js.type = "text/javascript";
-            js.src = `${fileLocation}`;
-            document.body.appendChild(js);
-            js.onload = (() => {
-              resolve()              
-            })
-      })
-
-      // load new one
+        await this.scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);
+        this.store.commit("setThreeJsIsLoaded", true)
+      }
+      await this.scriptLoader.loadFile(file);
        __three.init(this.$el, this, {width: 800, height: 600});
-
     }
   },
-  destroyed() {
+  destroyed():void {
     this.game = null;
   }
 }

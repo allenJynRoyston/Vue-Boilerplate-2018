@@ -6,12 +6,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
 export default {
     props: [],
     data() {
         return {
             game: null,
             store: this.$store,
+            scriptLoader: new VJScriptLoader()
         };
     },
     mounted() {
@@ -21,36 +23,16 @@ export default {
         init() {
             this.loadGame('src/_threeJS/ts_demo.js');
         },
-        loadGame(fileLocation) {
+        loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                // remove old game first
                 if (this.game !== null) {
                     this.game = null;
                 }
-                // load threeJS (once)
                 if (!this.store.getters._threeJSIsLoaded()) {
-                    yield new Promise((resolve, reject) => {
-                        let js = document.createElement("script");
-                        js.type = "text/javascript";
-                        js.src = `/node_modules/three/build/three.min.js`;
-                        document.body.appendChild(js);
-                        js.onload = (() => {
-                            this.store.commit('setThreeJsIsLoaded', true);
-                            resolve();
-                        });
-                    });
+                    yield this.scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);
+                    this.store.commit("setThreeJsIsLoaded", true);
                 }
-                // load game file
-                yield new Promise((resolve, reject) => {
-                    let js = document.createElement("script");
-                    js.type = "text/javascript";
-                    js.src = `${fileLocation}`;
-                    document.body.appendChild(js);
-                    js.onload = (() => {
-                        resolve();
-                    });
-                });
-                // load new one
+                yield this.scriptLoader.loadFile(file);
                 __three.init(this.$el, this, { width: 800, height: 600 });
             });
         }
