@@ -75,5 +75,6 @@ export default {
 
 <style lang="sass" scoped>
   #site-layout
+    padding: 50px
     min-height: 1200px
 </style>

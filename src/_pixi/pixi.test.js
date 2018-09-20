@@ -6,7 +6,7 @@ var __pixi = {
         ele.appendChild(app.view);
         
         //Get the texture for rope.
-        var trailTexture = PIXI.Texture.fromImage('src/_pixi/ninja-icon.png')
+        var trailTexture = PIXI.Texture.fromImage('src/_assets/images/ninja-icon.png')
         var historyX = [];
         var historyY = [];
         //historySize determines how long the trail will be.
