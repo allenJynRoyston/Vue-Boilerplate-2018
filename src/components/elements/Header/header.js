@@ -1,4 +1,4 @@
-import * as headerImg from '../../../assets/images/site/img.jpg';
+import * as headerImg from "../../../assets/images/site/img.jpg";
 export default {
     data() {
         return {
@@ -7,10 +7,8 @@ export default {
             store: this.$store
         };
     },
-    created() {
-    },
     watch: {
-        '$route'(to, from) {
+        "$route"(to, from) {
             this.currentroute = to.path;
         }
     },

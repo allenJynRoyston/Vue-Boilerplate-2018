@@ -13,10 +13,10 @@ export default {
             game: null,
             store: this.$store,
             demos: [
-                { title: 'Sprite Class Manager', file: 'boilerplate/spriteManagerDemo.min.js' },
-                { title: 'Controller Class Manager', file: 'boilerplate/controllerManagerDemo.min.js' },
-                { title: 'Bitmapdata Layer Demo', file: 'boilerplate/bitmapLayerDemo.min.js' },
-                { title: 'Bitmapdata Fill Demo', file: 'boilerplate/bitmapFillDemo.min.js' },
+                { title: "Sprite Class Manager", file: "boilerplate/spriteManagerDemo.min.js" },
+                { title: "Controller Class Manager", file: "boilerplate/controllerManagerDemo.min.js" },
+                { title: "Bitmapdata Layer Demo", file: "boilerplate/bitmapLayerDemo.min.js" },
+                { title: "Bitmapdata Fill Demo", file: "boilerplate/bitmapFillDemo.min.js" },
             ]
         };
     },
@@ -25,7 +25,7 @@ export default {
     },
     methods: {
         init() {
-            this.loadGame('boilerplate/spriteManagerDemo.min.js');
+            this.loadGame("boilerplate/spriteManagerDemo.min.js");
         },
         loadGame(fileName) {
             return __awaiter(this, void 0, void 0, function* () {

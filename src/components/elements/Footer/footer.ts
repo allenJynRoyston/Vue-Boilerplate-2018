@@ -1,13 +1,10 @@
 export default {
-  data () {
+  data():any {
     return {
       store: this.$store,
-    }
-  },
-  created: function () {
-
+    };
   },
   methods: {
 
   }
-}
+};

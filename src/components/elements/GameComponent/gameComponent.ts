@@ -2,24 +2,24 @@ declare var __phaser: any;
 
 export default {
   props: [],
-  data () {
+  data():any {
     return {
       game: null,
       store: this.$store,
       demos: [
-        {title: 'Sprite Class Manager', file: 'boilerplate/spriteManagerDemo.min.js'},
-        {title: 'Controller Class Manager', file: 'boilerplate/controllerManagerDemo.min.js'},
-        {title: 'Bitmapdata Layer Demo', file: 'boilerplate/bitmapLayerDemo.min.js'},
-        {title: 'Bitmapdata Fill Demo', file: 'boilerplate/bitmapFillDemo.min.js'},
+        {title: "Sprite Class Manager", file: "boilerplate/spriteManagerDemo.min.js"},
+        {title: "Controller Class Manager", file: "boilerplate/controllerManagerDemo.min.js"},
+        {title: "Bitmapdata Layer Demo", file: "boilerplate/bitmapLayerDemo.min.js"},
+        {title: "Bitmapdata Fill Demo", file: "boilerplate/bitmapFillDemo.min.js"},
       ]
-    }
+    };
   },
-  mounted(){
-    this.init()
+  mounted():void {
+    this.init();
   },
   methods: {
-    init(){      
-      this.loadGame('boilerplate/spriteManagerDemo.min.js')
+    init():void {
+      this.loadGame("boilerplate/spriteManagerDemo.min.js")
     },
     async loadGame(fileName){
       // remove old game first

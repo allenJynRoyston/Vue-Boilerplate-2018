@@ -7,8 +7,6 @@ export default {
     methods: {},
     mounted() {
         this.isReady = true;
-    },
-    destroyed() {
     }
 };
 //# sourceMappingURL=three.js.map
