@@ -12,7 +12,6 @@ export default {
     props: [],
     data() {
         return {
-            game: null,
             store: this.$store,
             scriptLoader: new VJScriptLoader(),
             pixiInstance: null
@@ -27,10 +26,7 @@ export default {
         },
         loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                let { game, store, scriptLoader, pixiInstance } = this;
-                if (game !== null) {
-                    game = null;
-                }
+                let { store, scriptLoader } = this;
                 if (!store.getters._pixiJSIsLoaded()) {
                     yield scriptLoader.loadFile(`/node_modules/pixi.js/dist/pixi.min.js`);
                     store.commit("setPixiIsLoaded", true);
@@ -38,12 +34,14 @@ export default {
                 }
                 yield scriptLoader.loadFile(file);
                 // load pixi instance
-                pixiInstance = new VJSPixiloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
-                yield pixiInstance.createNew();
+                let _p = new VJSPixiloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
+                yield _p.createNew();
             });
         }
     },
     destroyed() {
+        let { pixiInstance } = this;
+        pixiInstance.destroy();
     }
 };
 //# sourceMappingURL=pixiComponent.js.map

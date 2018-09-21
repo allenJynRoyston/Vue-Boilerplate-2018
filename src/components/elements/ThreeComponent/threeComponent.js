@@ -12,7 +12,6 @@ export default {
     props: [],
     data() {
         return {
-            game: null,
             store: this.$store,
             scriptLoader: new VJScriptLoader(),
             threeInstance: null
@@ -27,23 +26,24 @@ export default {
         },
         loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                let { game, store, scriptLoader, threeInstance } = this;
-                if (game !== null) {
-                    game = null;
-                }
+                let { store, scriptLoader } = this;
                 if (!store.getters._threeJSIsLoaded()) {
                     yield scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);
                     store.commit("setThreeJsIsLoaded", true);
                 }
                 yield scriptLoader.loadFile(file);
                 // load instance
-                threeInstance = new VJSThreeloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
-                yield threeInstance.createNew();
+                let t = new VJSThreeloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
+                yield t.createNew();
             });
         }
     },
     destroyed() {
-        this.game = null;
+        let { threeInstance } = this;
+        threeInstance.renderer.isAlive = false;
+        threeInstance.camera = null;
+        threeInstance.scene = null;
+        threeInstance.projector = null;
     }
 };
 //# sourceMappingURL=threeComponent.js.map
