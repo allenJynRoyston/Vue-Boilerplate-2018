@@ -5,7 +5,6 @@ export default {
   props: [],
   data():Object {
     return {
-      game: null,
       store: this.$store,
       scriptLoader: new VJScriptLoader(),
       threeInstance: null
@@ -19,10 +18,8 @@ export default {
       this.loadGame('src/_threeJS/three.test.js')
     },
     async loadGame(file:string):Promise<any> {
-      let {game, store, scriptLoader, threeInstance} = this;
-      if(game !== null){
-        game = null;
-      }
+      let {store, scriptLoader} = this;
+
       if(!store.getters._threeJSIsLoaded()){
         await scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);
         store.commit("setThreeJsIsLoaded", true)
@@ -30,11 +27,15 @@ export default {
       await scriptLoader.loadFile(file);
       
       // load instance
-      threeInstance = new VJSThreeloader({ele: this.$el, component: this, file, width: 800, height: 600})
-      await threeInstance.createNew()       
+      let t = new VJSThreeloader({ele: this.$el, component: this, file, width: 800, height: 600})
+      await t.createNew()       
     }
   },
   destroyed():void {
-    this.game = null;
+    let {threeInstance} = this;    
+    threeInstance.renderer.isAlive = false
+    threeInstance.camera = null
+    threeInstance.scene = null
+    threeInstance.projector = null;
   }
 }

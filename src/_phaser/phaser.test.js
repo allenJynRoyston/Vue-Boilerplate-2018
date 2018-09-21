@@ -35,11 +35,11 @@ var __phaser = {
             "}"
             ];
 
-            sprite = game.add.sprite();
+            sprite = app.add.sprite();
             sprite.width = width;
             sprite.height = height;
 
-            filter = new Phaser.Filter(game, null, fragmentSrc);
+            filter = new Phaser.Filter(app, null, fragmentSrc);
             filter.setResolution(width, height);
 
             sprite.filters = [ filter ];
@@ -49,7 +49,8 @@ var __phaser = {
             filter.update();
         }        
 
-        game = new Phaser.Game(width, height, Phaser.WEBGL, ele, { create, update })
+        app = new Phaser.Game(width, height, Phaser.WEBGL, ele, { create, update })
+        component.phaserInstance = app
 
     }
 }

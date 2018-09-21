@@ -5,7 +5,6 @@ export default {
   props: [],
   data():Object {
     return {
-      game: null,
       store: this.$store,
       scriptLoader: new VJScriptLoader(),
       phaserInstance: null
@@ -19,12 +18,8 @@ export default {
       this.loadGame(`src/_phaser/phaser.test.js`)
     },
     async loadGame(file:string):Promise<any> {
-      let {game, store, scriptLoader, phaserInstance} = this;
-
-      // remove old game first
-      if(game !== null) {
-        game.destroy();
-      }
+      let {store, scriptLoader} = this;
+      
       // load phaser (once)
       if(!store.getters._phaserIsLoaded()){
         await scriptLoader.loadFile(`/node_modules/phaser-ce/build/phaser.min.js`);
@@ -34,11 +29,12 @@ export default {
       await scriptLoader.loadFile(file);
 
       // load pixi instance
-      phaserInstance = new VJSPhaserloader({ele: this.$el, component: this, file, width: 800, height: 600})
-      await phaserInstance.createNew()
+      let ph = new VJSPhaserloader({ele: this.$el, component: this, file, width: 800, height: 600})
+      await ph.createNew()
     }    
   },
   destroyed():void {
-   
+   let {phaserInstance} = this;
+   phaserInstance.destroy()
   }
 }
