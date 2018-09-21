@@ -18,8 +18,11 @@ export default {
       this.loadGame(`src/_phaser/phaser.test.js`)
     },
     async loadGame(file:string):Promise<any> {
-      let {store, scriptLoader} = this;
-      
+      let {store, scriptLoader, phaserInstance} = this;
+      if(phaserInstance !== null){
+        this.destroyed()
+      }
+
       // load phaser (once)
       if(!store.getters._phaserIsLoaded()){
         await scriptLoader.loadFile(`/node_modules/phaser-ce/build/phaser.min.js`);

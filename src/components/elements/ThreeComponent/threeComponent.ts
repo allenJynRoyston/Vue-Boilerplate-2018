@@ -18,7 +18,10 @@ export default {
       this.loadGame('src/_threeJS/three.test.js')
     },
     async loadGame(file:string):Promise<any> {
-      let {store, scriptLoader} = this;
+      let {store, scriptLoader, threeInstance} = this;
+      if(threeInstance !== null){
+        this.destroyed()
+      }
 
       if(!store.getters._threeJSIsLoaded()){
         await scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);

@@ -26,7 +26,10 @@ export default {
         },
         loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                let { store, scriptLoader } = this;
+                let { store, scriptLoader, threeInstance } = this;
+                if (threeInstance !== null) {
+                    this.destroyed();
+                }
                 if (!store.getters._threeJSIsLoaded()) {
                     yield scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);
                     store.commit("setThreeJsIsLoaded", true);

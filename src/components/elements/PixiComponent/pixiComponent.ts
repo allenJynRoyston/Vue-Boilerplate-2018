@@ -18,8 +18,11 @@ export default {
       this.loadGame(`src/_pixi/pixi.test.js`)
     },
     async loadGame(file:string):Promise<any> {
-      let {store, scriptLoader} = this;
-      
+      let {store, scriptLoader, pixiInstance} = this;
+      if(pixiInstance !== null){
+        this.destroyed()
+      }
+
       if(!store.getters._pixiJSIsLoaded()) {
         await scriptLoader.loadFile(`/node_modules/pixi.js/dist/pixi.min.js`);
         store.commit("setPixiIsLoaded", true);

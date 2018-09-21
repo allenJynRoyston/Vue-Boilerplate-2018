@@ -26,7 +26,10 @@ export default {
         },
         loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                let { store, scriptLoader } = this;
+                let { store, scriptLoader, pixiInstance } = this;
+                if (pixiInstance !== null) {
+                    this.destroyed();
+                }
                 if (!store.getters._pixiJSIsLoaded()) {
                     yield scriptLoader.loadFile(`/node_modules/pixi.js/dist/pixi.min.js`);
                     store.commit("setPixiIsLoaded", true);

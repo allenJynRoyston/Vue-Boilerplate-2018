@@ -26,7 +26,10 @@ export default {
         },
         loadGame(file) {
             return __awaiter(this, void 0, void 0, function* () {
-                let { store, scriptLoader } = this;
+                let { store, scriptLoader, phaserInstance } = this;
+                if (phaserInstance !== null) {
+                    this.destroyed();
+                }
                 // load phaser (once)
                 if (!store.getters._phaserIsLoaded()) {
                     yield scriptLoader.loadFile(`/node_modules/phaser-ce/build/phaser.min.js`);
