@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
 import { VJSThreeloader } from "../../../assets/js/vjs-loaders";
 export default {
-    props: [],
+    props: ['file'],
     data() {
         return {
             store: this.$store,
@@ -22,13 +22,15 @@ export default {
     },
     methods: {
         init() {
-            this.loadGame('src/_threeJS/three.test.js');
+            if (!!this.$props.file) {
+                this.loadFile(`${this.$props.file}`);
+            }
         },
-        loadGame(file) {
+        loadFile(file) {
             return __awaiter(this, void 0, void 0, function* () {
                 let { store, scriptLoader, threeInstance } = this;
                 if (threeInstance !== null) {
-                    this.destroyed();
+                    this.destroy();
                 }
                 if (!store.getters._threeJSIsLoaded()) {
                     yield scriptLoader.loadFile(`/node_modules/three/build/three.min.js`);
@@ -36,17 +38,25 @@ export default {
                 }
                 yield scriptLoader.loadFile(file);
                 // load instance
+                console.log(this.$el);
                 let t = new VJSThreeloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
                 yield t.createNew();
             });
+        },
+        reload() {
+            this.loadFile('src/_threeJS/three.test.js');
+        },
+        destroy() {
+            let { threeInstance } = this;
+            threeInstance.renderer.isAlive = false;
+            threeInstance.camera = null;
+            threeInstance.scene = null;
+            threeInstance.projector = null;
+            this.$el.remove(this.$el);
         }
     },
     destroyed() {
-        let { threeInstance } = this;
-        threeInstance.renderer.isAlive = false;
-        threeInstance.camera = null;
-        threeInstance.scene = null;
-        threeInstance.projector = null;
+        this.destroy();
     }
 };
 //# sourceMappingURL=threeComponent.js.map

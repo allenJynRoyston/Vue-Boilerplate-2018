@@ -2,25 +2,28 @@ import {VJScriptLoader} from "../../../assets/js/vjs-scriptloader";
 import {VJSPhaserloader} from "../../../assets/js/vjs-loaders";
 
 export default {
-  props: [],
+  props: ['file'],
   data():Object {
-    return {
+    return {      
       store: this.$store,
       scriptLoader: new VJScriptLoader(),
       phaserInstance: null
     };
   },
-  mounted():void {
+  mounted():void {    
     this.init();
   },
   methods: {
     init():void {
-      this.loadGame(`src/_phaser/phaser.test.js`)
+      if(!!this.$props.file){
+        this.loadFile(`${this.$props.file}`)
+      }
     },
-    async loadGame(file:string):Promise<any> {
+
+    async loadFile(file:string):Promise<any> {
       let {store, scriptLoader, phaserInstance} = this;
       if(phaserInstance !== null){
-        this.destroyed()
+        this.destroy()
       }
 
       // load phaser (once)
@@ -31,13 +34,21 @@ export default {
       }
       await scriptLoader.loadFile(file);
 
-      // load pixi instance
+      // load pixi instance     
       let ph = new VJSPhaserloader({ele: this.$el, component: this, file, width: 800, height: 600})
       await ph.createNew()
-    }    
+    },
+    
+    reload(){
+      this.loadGame(`src/_phaser/phaser.test.js`)
+    },
+
+    destroy(){
+      let {phaserInstance} = this;
+      phaserInstance.destroy()
+    }
   },
   destroyed():void {
-   let {phaserInstance} = this;
-   phaserInstance.destroy()
+   this.destroy()
   }
 }

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
 import { VJSPixiloader } from "../../../assets/js/vjs-loaders";
 export default {
-    props: [],
+    props: ['file'],
     data() {
         return {
             store: this.$store,
@@ -22,13 +22,15 @@ export default {
     },
     methods: {
         init() {
-            this.loadGame(`src/_pixi/pixi.test.js`);
+            if (!!this.$props.file) {
+                this.loadFile(`${this.$props.file}`);
+            }
         },
-        loadGame(file) {
+        loadFile(file) {
             return __awaiter(this, void 0, void 0, function* () {
                 let { store, scriptLoader, pixiInstance } = this;
                 if (pixiInstance !== null) {
-                    this.destroyed();
+                    this.destroy();
                 }
                 if (!store.getters._pixiJSIsLoaded()) {
                     yield scriptLoader.loadFile(`/node_modules/pixi.js/dist/pixi.min.js`);
@@ -40,11 +42,17 @@ export default {
                 let _p = new VJSPixiloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
                 yield _p.createNew();
             });
+        },
+        reload() {
+            this.loadGame(`src/_pixi/pixi.test.js`);
+        },
+        destroy() {
+            let { pixiInstance } = this;
+            pixiInstance.destroy();
         }
     },
     destroyed() {
-        let { pixiInstance } = this;
-        pixiInstance.destroy();
+        this.destroy();
     }
 };
 //# sourceMappingURL=pixiComponent.js.map

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
 import { VJSPhaserloader } from "../../../assets/js/vjs-loaders";
 export default {
-    props: [],
+    props: ['file'],
     data() {
         return {
             store: this.$store,
@@ -22,13 +22,15 @@ export default {
     },
     methods: {
         init() {
-            this.loadGame(`src/_phaser/phaser.test.js`);
+            if (!!this.$props.file) {
+                this.loadFile(`${this.$props.file}`);
+            }
         },
-        loadGame(file) {
+        loadFile(file) {
             return __awaiter(this, void 0, void 0, function* () {
                 let { store, scriptLoader, phaserInstance } = this;
                 if (phaserInstance !== null) {
-                    this.destroyed();
+                    this.destroy();
                 }
                 // load phaser (once)
                 if (!store.getters._phaserIsLoaded()) {
@@ -37,15 +39,21 @@ export default {
                     store.commit("setPhaserIsLoaded", true);
                 }
                 yield scriptLoader.loadFile(file);
-                // load pixi instance
+                // load pixi instance     
                 let ph = new VJSPhaserloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
                 yield ph.createNew();
             });
+        },
+        reload() {
+            this.loadGame(`src/_phaser/phaser.test.js`);
+        },
+        destroy() {
+            let { phaserInstance } = this;
+            phaserInstance.destroy();
         }
     },
     destroyed() {
-        let { phaserInstance } = this;
-        phaserInstance.destroy();
+        this.destroy();
     }
 };
 //# sourceMappingURL=PhaserComponent.js.map

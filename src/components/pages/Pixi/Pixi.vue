@@ -1,6 +1,6 @@
 <template lang="pug">
   .container    
-      pixi-component
+      pixi-component(v-bind:file='"src/_pixi/pixi.test.js"')
 </template>
 
 <script src='./pixi.js'></script>

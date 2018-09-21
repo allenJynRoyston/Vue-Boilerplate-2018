@@ -1,5 +1,5 @@
 <template lang="pug">
-  #phaser-example
+  section
 </template>
 
 <script src='./phaserComponent.js'></script>

@@ -2,7 +2,7 @@ import {VJScriptLoader} from "../../../assets/js/vjs-scriptloader";
 import {VJSPixiloader} from "../../../assets/js/vjs-loaders";
 
 export default {
-  props: [],
+  props: ['file'],
   data():Object {
     return {
       store: this.$store,
@@ -15,12 +15,14 @@ export default {
   },
   methods: {
     init():void {
-      this.loadGame(`src/_pixi/pixi.test.js`)
+      if(!!this.$props.file){
+        this.loadFile(`${this.$props.file}`)
+      }
     },
-    async loadGame(file:string):Promise<any> {
+    async loadFile(file:string):Promise<any> {
       let {store, scriptLoader, pixiInstance} = this;
       if(pixiInstance !== null){
-        this.destroyed()
+        this.destroy()
       }
 
       if(!store.getters._pixiJSIsLoaded()) {
@@ -33,10 +35,18 @@ export default {
       // load pixi instance
       let _p = new VJSPixiloader({ele: this.$el, component: this, file, width: 800, height: 600})
       await _p.createNew()      
+    },
+
+    reload(){
+      this.loadGame(`src/_pixi/pixi.test.js`)
+    },    
+
+    destroy(){
+      let {pixiInstance} = this
+      pixiInstance.destroy()
     }
   },
   destroyed():void {
-    let {pixiInstance} = this
-    pixiInstance.destroy()
+    this.destroy()
   }
 };
