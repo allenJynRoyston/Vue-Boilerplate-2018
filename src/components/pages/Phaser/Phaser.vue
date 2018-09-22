@@ -1,6 +1,12 @@
 <template lang="pug">
-  .container 
-    phaser-component(v-bind:file='"src/_phaser/phaser.test.js"')
+  .container
+    .col-xs-12.center
+      select(v-model="selected" v-on:change='onchange()')
+        option(v-for='file in files') {{file.filename}}
+    .col-xs-12.center-text.center(style='padding: 20px')
+      phaser-component(v-bind:ele='component')
+    .col-xs-12.center
+      button(v-on:click='loadfile()') Reload
 </template>
 
 <script src='./phaser.js'></script>

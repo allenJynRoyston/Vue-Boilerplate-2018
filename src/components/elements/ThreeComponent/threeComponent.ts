@@ -2,7 +2,6 @@ import {VJScriptLoader} from "../../../assets/js/vjs-scriptloader";
 import {VJSThreeloader} from "../../../assets/js/vjs-loaders";
 
 export default {
-  props: ['file'],
   data():Object {
     return {
       store: this.$store,
@@ -11,14 +10,9 @@ export default {
     }
   },
   mounted():void {
-    this.init()
+    this.$parent.component.push(this)
   },
   methods: {
-    init():void {
-      if(!!this.$props.file){
-        this.loadFile(`${this.$props.file}`)
-      }
-    },
     async loadFile(file:string):Promise<any> {
       let {store, scriptLoader, threeInstance} = this;
       if(threeInstance !== null){
@@ -32,7 +26,6 @@ export default {
       await scriptLoader.loadFile(file);
       
       // load instance
-      console.log(this.$el)
       let t = new VJSThreeloader({ele: this.$el, component: this, file, width: 800, height: 600})
       await t.createNew()       
     },
@@ -47,7 +40,7 @@ export default {
       threeInstance.camera = null
       threeInstance.scene = null
       threeInstance.projector = null;
-      this.$el.remove(this.$el)
+      this.$el.getElementsByTagName('canvas')[0].remove()
     }
   },
   destroyed():void {

@@ -2,7 +2,6 @@ import {VJScriptLoader} from "../../../assets/js/vjs-scriptloader";
 import {VJSPixiloader} from "../../../assets/js/vjs-loaders";
 
 export default {
-  props: ['file'],
   data():Object {
     return {
       store: this.$store,
@@ -11,14 +10,9 @@ export default {
     };
   },
   mounted():void {
-    this.init();
+    this.$parent.component.push(this)
   },
   methods: {
-    init():void {
-      if(!!this.$props.file){
-        this.loadFile(`${this.$props.file}`)
-      }
-    },
     async loadFile(file:string):Promise<any> {
       let {store, scriptLoader, pixiInstance} = this;
       if(pixiInstance !== null){
@@ -43,6 +37,7 @@ export default {
 
     destroy(){
       let {pixiInstance} = this
+      this.$el.getElementsByTagName('canvas')[0].remove()
       pixiInstance.destroy()
     }
   },

@@ -5,21 +5,26 @@ export default {
   data():Object {
     return {
       headerImg,
-      store: this.$store
+      store: this.$store,
     };
+  },
+  mounted(){
+    this.animateHeader(this.$route.path !== '/', true)
   },
   watch: {
     "$route"(to:any, from:any):void {      
-      anime({
-        easing: 'easeOutSine',
-        targets: document.querySelector("body"),
-        translateY: (to.path !== '/') ? `-${ (document.querySelector(".custom-header") as any).offsetHeight}px` : "0px",
-        duration: 250,
-        delay: 500
-      });      
+      this.animateHeader(to.path !== '/')
     }
   },
   methods: {
-
+    animateHeader(state:Boolean, forced = false){
+      anime({
+        easing: 'easeOutSine',
+        targets: document.querySelector("#app-layout"),
+        translateY: state ? `-${ (document.querySelector(".custom-header") as any).offsetHeight}px` : "0px",
+        duration: forced ? 0 : 250,
+        delay: 500
+      });
+    }
   }
 };

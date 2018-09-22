@@ -1,8 +1,7 @@
 import {VJScriptLoader} from "../../../assets/js/vjs-scriptloader";
 import {VJSPhaserloader} from "../../../assets/js/vjs-loaders";
 
-export default {
-  props: ['file'],
+export default {  
   data():Object {
     return {      
       store: this.$store,
@@ -11,15 +10,9 @@ export default {
     };
   },
   mounted():void {    
-    this.init();
+    this.$parent.component.push(this)
   },
   methods: {
-    init():void {
-      if(!!this.$props.file){
-        this.loadFile(`${this.$props.file}`)
-      }
-    },
-
     async loadFile(file:string):Promise<any> {
       let {store, scriptLoader, phaserInstance} = this;
       if(phaserInstance !== null){

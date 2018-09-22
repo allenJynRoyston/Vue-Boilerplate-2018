@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
 import { VJSThreeloader } from "../../../assets/js/vjs-loaders";
 export default {
-    props: ['file'],
     data() {
         return {
             store: this.$store,
@@ -18,14 +17,9 @@ export default {
         };
     },
     mounted() {
-        this.init();
+        this.$parent.component.push(this);
     },
     methods: {
-        init() {
-            if (!!this.$props.file) {
-                this.loadFile(`${this.$props.file}`);
-            }
-        },
         loadFile(file) {
             return __awaiter(this, void 0, void 0, function* () {
                 let { store, scriptLoader, threeInstance } = this;
@@ -38,7 +32,6 @@ export default {
                 }
                 yield scriptLoader.loadFile(file);
                 // load instance
-                console.log(this.$el);
                 let t = new VJSThreeloader({ ele: this.$el, component: this, file, width: 800, height: 600 });
                 yield t.createNew();
             });
@@ -52,7 +45,7 @@ export default {
             threeInstance.camera = null;
             threeInstance.scene = null;
             threeInstance.projector = null;
-            this.$el.remove(this.$el);
+            this.$el.getElementsByTagName('canvas')[0].remove();
         }
     },
     destroyed() {

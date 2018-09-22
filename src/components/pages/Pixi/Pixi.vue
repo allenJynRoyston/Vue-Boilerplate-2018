@@ -1,6 +1,12 @@
 <template lang="pug">
-  .container    
-      pixi-component(v-bind:file='"src/_pixi/pixi.test.js"')
+  .container
+    .col-xs-12.center
+      select(v-model="selected" v-on:change='onchange()')
+        option(v-for='file in files') {{file.filename}}
+    .col-xs-12.center-text.center(style='padding: 20px')
+      pixi-component(v-bind:ele='component')
+    .col-xs-12.center
+      button(v-on:click='loadfile()') Reload
 </template>
 
 <script src='./pixi.js'></script>

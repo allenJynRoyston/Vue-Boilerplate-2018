@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { VJScriptLoader } from "../../../assets/js/vjs-scriptloader";
 import { VJSPhaserloader } from "../../../assets/js/vjs-loaders";
 export default {
-    props: ['file'],
     data() {
         return {
             store: this.$store,
@@ -18,14 +17,9 @@ export default {
         };
     },
     mounted() {
-        this.init();
+        this.$parent.component.push(this);
     },
     methods: {
-        init() {
-            if (!!this.$props.file) {
-                this.loadFile(`${this.$props.file}`);
-            }
-        },
         loadFile(file) {
             return __awaiter(this, void 0, void 0, function* () {
                 let { store, scriptLoader, phaserInstance } = this;

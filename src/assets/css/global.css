@@ -41,3 +41,8 @@ a, .is-cursor{
 .col-no-gutter{
   padding: 0px!important
 }
+
+.input, select, button{
+  color: black;
+  padding: 2px
+}
